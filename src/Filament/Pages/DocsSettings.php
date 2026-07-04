@@ -2,7 +2,6 @@
 
 namespace Happytodev\BlogrDocs\Filament\Pages;
 
-use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
@@ -94,11 +93,7 @@ class DocsSettings extends Page
 
     protected function getFormActions(): array
     {
-        return [
-            Action::make('save')
-                ->label('Save settings')
-                ->submit('save'),
-        ];
+        return [];
     }
 
     public function save(): void

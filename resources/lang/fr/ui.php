@@ -15,6 +15,7 @@ return [
     'published_at' => 'Publié le',
     'last_updated' => 'Dernière mise à jour',
     'overview' => 'Vue d\'ensemble',
+    'save_settings' => 'Enregistrer',
     'pdf_settings' => 'Paramètres PDF',
     'pdf_enable' => 'Activer l\'export PDF',
     'pdf_driver' => 'Moteur PDF',

@@ -15,6 +15,7 @@ return [
     'published_at' => 'Published',
     'last_updated' => 'Last updated',
     'overview' => 'Overview',
+    'save_settings' => 'Save settings',
     'pdf_settings' => 'PDF Export Settings',
     'pdf_enable' => 'Enable PDF export',
     'pdf_driver' => 'PDF driver',
