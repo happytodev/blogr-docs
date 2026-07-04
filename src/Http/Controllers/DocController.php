@@ -181,12 +181,21 @@ class DocController extends Controller
 
     public function downloadPdf(string $path): mixed
     {
+        return $this->generatePdf($path, config('app.locale', 'en'));
+    }
+
+    public function downloadPdfLocalized(string $locale, string $path): mixed
+    {
+        return $this->generatePdf($path, $locale);
+    }
+
+    private function generatePdf(string $path, string $locale): mixed
+    {
         if (! config('blogr-docs.pdf.enabled', false)) {
             abort(404);
         }
 
         $segments = explode('/', $path);
-        $locale = config('app.locale', 'en');
         $article = $this->treeHelper->resolvePath($segments, $locale);
 
         if (! $article) {

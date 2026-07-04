@@ -92,6 +92,10 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
                 $router->get('/{locale}/'.$prefix.'/{path}', [
                     \Happytodev\BlogrDocs\Http\Controllers\DocController::class, 'showLocalized',
                 ])->where('path', '.*')->name('blogr-docs.show');
+
+                $router->get('/{locale}/'.$prefix.'/{path}/pdf', [
+                    \Happytodev\BlogrDocs\Http\Controllers\DocController::class, 'downloadPdfLocalized',
+                ])->where('path', '.*')->name('blogr-docs.pdf');
             });
         }
 
