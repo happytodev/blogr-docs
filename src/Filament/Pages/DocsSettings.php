@@ -100,7 +100,21 @@ class DocsSettings extends Page
     {
         $this->validate();
 
-        $path = config_path('blogr-docs.php');
+        $path = __DIR__.'/../../../config/blogr-docs.php';
+
+        if (! file_exists($path)) {
+            $path = config_path('blogr-docs.php');
+        }
+
+        if (! file_exists($path)) {
+            Notification::make()
+                ->title('Config file not found')
+                ->danger()
+                ->send();
+
+            return;
+        }
+
         $config = require $path;
 
         $config['pdf']['enabled'] = $this->pdfEnabled;
