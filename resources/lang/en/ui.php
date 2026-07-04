@@ -1,0 +1,21 @@
+<?php
+
+return [
+    'docs' => 'Docs',
+    'sections' => 'Sections',
+    'learning_paths' => 'Learning Paths',
+    'previous' => 'Previous',
+    'next' => 'Next',
+    'table_of_contents' => 'Table of Contents',
+    'search' => 'Search documentation...',
+    'no_results' => 'No results found.',
+    'on_this_page' => 'On this page',
+    'edit_this_page' => 'Edit this page',
+    'pdf_export' => 'Download PDF',
+    'published_at' => 'Published',
+    'last_updated' => 'Last updated',
+    'overview' => 'Overview',
+    'translation_unavailable_title' => 'Content not available in :locale',
+    'translation_unavailable_message' => 'This page is not available in :requested. Showing the :showing version instead.',
+    'translation_available_in' => 'Available in:',
+];

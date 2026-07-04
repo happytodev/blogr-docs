@@ -1,0 +1,62 @@
+{
+    "name": "happytodev/blogr-docs",
+    "description": "Documentation system plugin for Blogr — hierarchical docs, learning paths, media embeds, PDF export",
+    "type": "filament-plugin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Frederic Blanc",
+            "email": "frederic.blanc@happytodev.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "happytodev/blogr": "^1.23",
+        "spatie/laravel-package-tools": "^1.15.0",
+        "filament/filament": "^4.8.5",
+        "filament/actions": "^4.8.5",
+        "filament/tables": "^4.8.5",
+        "league/commonmark": "^2.6"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^10.11",
+        "pestphp/pest": "^4.0",
+        "pestphp/pest-plugin-arch": "^4.0",
+        "pestphp/pest-plugin-laravel": "^4.0",
+        "larastan/larastan": "^3.10",
+        "laravel/pint": "^1.29"
+    },
+    "autoload": {
+        "psr-4": {
+            "Happytodev\\BlogrDocs\\": "src/",
+            "Happytodev\\BlogrDocs\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Happytodev\\BlogrDocs\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "lint": "vendor/bin/pint",
+        "analyse": "vendor/bin/phpstan analyse --memory-limit=2G"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Happytodev\\BlogrDocs\\BlogrDocsServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "pestphp/pest-plugin-arch": true,
+            "pestphp/pest-plugin-laravel": true
+        }
+    }
+}
