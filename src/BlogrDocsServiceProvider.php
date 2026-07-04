@@ -85,6 +85,10 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
             $router->group([
                 'middleware' => array_merge($middleware, [\Happytodev\Blogr\Http\Middleware\SetLocale::class]),
             ], function ($router) use ($prefix) {
+                $router->get('/{locale}/'.$prefix.'/{path}/pdf', [
+                    \Happytodev\BlogrDocs\Http\Controllers\DocController::class, 'downloadPdfLocalized',
+                ])->where('path', '.*')->name('blogr-docs.pdf');
+
                 $router->get('/{locale}/'.$prefix, [
                     \Happytodev\BlogrDocs\Http\Controllers\DocController::class, 'index',
                 ])->name('blogr-docs.index');
@@ -92,14 +96,14 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
                 $router->get('/{locale}/'.$prefix.'/{path}', [
                     \Happytodev\BlogrDocs\Http\Controllers\DocController::class, 'showLocalized',
                 ])->where('path', '.*')->name('blogr-docs.show');
-
-                $router->get('/{locale}/'.$prefix.'/{path}/pdf', [
-                    \Happytodev\BlogrDocs\Http\Controllers\DocController::class, 'downloadPdfLocalized',
-                ])->where('path', '.*')->name('blogr-docs.pdf');
             });
         }
 
             $router->group(['middleware' => $middleware], function ($router) use ($prefix) {
+            $router->get($prefix.'/{path}/pdf', [
+                \Happytodev\BlogrDocs\Http\Controllers\DocController::class, 'downloadPdf',
+            ])->where('path', '.*')->name('blogr-docs.pdf');
+
             $router->get($prefix, [
                 \Happytodev\BlogrDocs\Http\Controllers\DocController::class, 'index',
             ])->name('blogr-docs.index');
@@ -107,10 +111,6 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
             $router->get($prefix.'/{path}', [
                 \Happytodev\BlogrDocs\Http\Controllers\DocController::class, 'show',
             ])->where('path', '.*')->name('blogr-docs.show');
-
-            $router->get($prefix.'/{path}/pdf', [
-                \Happytodev\BlogrDocs\Http\Controllers\DocController::class, 'downloadPdf',
-            ])->where('path', '.*')->name('blogr-docs.pdf');
         });
     }
 
