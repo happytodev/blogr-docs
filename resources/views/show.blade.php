@@ -37,14 +37,28 @@
     @endif
 
     <header class="mb-8">
-        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            {{ $title }}
-        </h1>
-        @if($translation->excerpt)
-            <p class="text-xl text-gray-600 dark:text-gray-300">
-                {{ $translation->excerpt }}
-            </p>
-        @endif
+        <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+                <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                    {{ $title }}
+                </h1>
+                @if($translation->excerpt)
+                    <p class="text-xl text-gray-600 dark:text-gray-300">
+                        {{ $translation->excerpt }}
+                    </p>
+                @endif
+            </div>
+            @if(config('blogr-docs.pdf.enabled', false) && isset($canonicalUrl))
+                <a href="{{ $canonicalUrl }}/pdf"
+                   class="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 2a.75.75 0 01.75.75v7.5l1.97-1.97a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0L6.47 9.34a.75.75 0 111.06-1.06l1.97 1.97V2.75A.75.75 0 0110 2z"/>
+                        <path d="M3.75 13.5a.75.75 0 01.75.75v2.25h11V14.25a.75.75 0 011.5 0v2.25a1.5 1.5 0 01-1.5 1.5H4.5a1.5 1.5 0 01-1.5-1.5V14.25a.75.75 0 01.75-.75z"/>
+                    </svg>
+                    {{ __('blogr-docs::ui.pdf_export') }}
+                </a>
+            @endif
+        </div>
     </header>
 
     @if($htmlContent)

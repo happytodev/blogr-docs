@@ -17,7 +17,8 @@
         "filament/filament": "^4.8.5",
         "filament/actions": "^4.8.5",
         "filament/tables": "^4.8.5",
-        "league/commonmark": "^2.6"
+        "league/commonmark": "^2.6",
+        "barryvdh/laravel-dompdf": "^3.1"
     },
     "require-dev": {
         "orchestra/testbench": "^10.11",

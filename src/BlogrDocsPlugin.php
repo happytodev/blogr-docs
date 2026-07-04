@@ -4,6 +4,7 @@ namespace Happytodev\BlogrDocs;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
+use Happytodev\BlogrDocs\Filament\Pages\DocsSettings;
 use Happytodev\BlogrDocs\Filament\Resources\DocArticleResource;
 use Happytodev\BlogrDocs\Filament\Resources\DocLearningPathResource;
 
@@ -19,6 +20,10 @@ class BlogrDocsPlugin implements Plugin
         $panel->resources([
             DocArticleResource::class,
             DocLearningPathResource::class,
+        ]);
+
+        $panel->pages([
+            DocsSettings::class,
         ]);
 
         $panel->navigationGroups([

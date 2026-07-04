@@ -58,6 +58,8 @@ return [
     'pdf' => [
         'enabled' => false,
         'driver' => 'dompdf',
+        'page_size' => 'A4',
+        'orientation' => 'portrait',
     ],
 
     /*

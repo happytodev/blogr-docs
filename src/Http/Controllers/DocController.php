@@ -6,6 +6,7 @@ use Happytodev\BlogrDocs\Helpers\DocTreeHelper;
 use Happytodev\BlogrDocs\Models\DocArticle;
 use Happytodev\BlogrDocs\Models\DocArticleTranslation;
 use Happytodev\BlogrDocs\Models\DocLearningPath;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
@@ -176,6 +177,53 @@ class DocController extends Controller
             'canonicalUrl' => $translation->url(),
             'displayToc' => $article->display_toc,
         ]);
+    }
+
+    public function downloadPdf(string $path): mixed
+    {
+        if (! config('blogr-docs.pdf.enabled', false)) {
+            abort(404);
+        }
+
+        $segments = explode('/', $path);
+        $locale = config('app.locale', 'en');
+        $article = $this->treeHelper->resolvePath($segments, $locale);
+
+        if (! $article) {
+            $lastSlug = end($segments);
+            $translationInAnyLocale = DocArticleTranslation::where('slug', $lastSlug)->first();
+            if ($translationInAnyLocale) {
+                $article = $translationInAnyLocale->article;
+            }
+        }
+
+        if (! $article) {
+            abort(404);
+        }
+
+        $translation = $article->translation($locale) ?? $article->defaultTranslation();
+
+        if (! $translation) {
+            abort(404);
+        }
+
+        $converter = app('blogr-docs.converter');
+        $htmlContent = $converter->convert($translation->content ?? '')->getContent();
+
+        $pdf = Pdf::loadHTML(view('blogr-docs::pdf', [
+            'title' => $translation->title,
+            'content' => $htmlContent,
+            'locale' => $locale,
+            'seoTitle' => $translation->seo_title ?? $translation->title,
+            'seoDescription' => $translation->seo_description,
+        ])->render());
+
+        $pdf->setPaper(
+            config('blogr-docs.pdf.page_size', 'A4'),
+            config('blogr-docs.pdf.orientation', 'portrait')
+        );
+
+        return $pdf->download(Str::slug($translation->title).'.pdf');
     }
 
     private function injectHeadingIds(string $html): string

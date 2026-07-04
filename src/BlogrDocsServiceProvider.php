@@ -2,11 +2,14 @@
 
 namespace Happytodev\BlogrDocs;
 
+use Happytodev\Blogr\Rendering\ShikiCodeBlockRenderer;
 use Happytodev\Blogr\Services\ExtensionRegistry;
 use Happytodev\Blogr\Services\LinkTypeRegistry;
 use Happytodev\BlogrDocs\Extensions\MediaEmbedAdapter;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\Extension\CommonMark\Node\Block\FencedCode;
+use League\CommonMark\Extension\CommonMark\Node\Block\IndentedCode;
 use League\CommonMark\Extension\Embed\EmbedExtension;
 use League\CommonMark\Extension\Table\TableExtension;
 use League\CommonMark\MarkdownConverter;
@@ -54,6 +57,9 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
             $environment->addExtension(new EmbedExtension);
             $environment->addExtension(new TableExtension);
 
+            $environment->addRenderer(FencedCode::class, new ShikiCodeBlockRenderer);
+            $environment->addRenderer(IndentedCode::class, new ShikiCodeBlockRenderer);
+
             return new MarkdownConverter($environment);
         });
     }
@@ -89,7 +95,7 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
             });
         }
 
-        $router->group(['middleware' => $middleware], function ($router) use ($prefix) {
+            $router->group(['middleware' => $middleware], function ($router) use ($prefix) {
             $router->get($prefix, [
                 \Happytodev\BlogrDocs\Http\Controllers\DocController::class, 'index',
             ])->name('blogr-docs.index');
@@ -97,6 +103,10 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
             $router->get($prefix.'/{path}', [
                 \Happytodev\BlogrDocs\Http\Controllers\DocController::class, 'show',
             ])->where('path', '.*')->name('blogr-docs.show');
+
+            $router->get($prefix.'/{path}/pdf', [
+                \Happytodev\BlogrDocs\Http\Controllers\DocController::class, 'downloadPdf',
+            ])->where('path', '.*')->name('blogr-docs.pdf');
         });
     }
 
