@@ -125,7 +125,7 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
                 public function getId(): string { return 'blogr-docs'; }
                 public function getName(): string { return 'Blogr Docs'; }
                 public function getDescription(): string { return 'Hierarchical documentation system with learning paths, media embeds, and PDF export.'; }
-                public function getVersion(): string { return '1.0.0'; }
+                public function getVersion(): string { return \Happytodev\BlogrDocs\Blogr::VERSION; }
                 public function getAuthor(): string { return 'HappyToDev'; }
                 public function getHomepage(): ?string { return null; }
                 public function getDependencies(): array { return ['blogr-core']; }

@@ -88,3 +88,25 @@ it('has correct plugin id', function () {
 
     expect($plugin->getId())->toBe('blogr-docs');
 });
+
+it('has correct version constant', function () {
+    expect(\Happytodev\BlogrDocs\Blogr::VERSION)->toMatch('/^\d+\.\d+\.\d+$/');
+});
+
+test('extension version matches Blogr::VERSION', function () {
+    $extension = new class implements \Happytodev\Blogr\Contracts\BlogrExtension
+    {
+        public function getId(): string { return 'blogr-docs'; }
+        public function getName(): string { return 'Blogr Docs'; }
+        public function getDescription(): string { return ''; }
+        public function getVersion(): string { return \Happytodev\BlogrDocs\Blogr::VERSION; }
+        public function getAuthor(): string { return 'HappyToDev'; }
+        public function getHomepage(): ?string { return null; }
+        public function getDependencies(): array { return ['blogr-core']; }
+        public function getSettingsUrl(): ?string { return null; }
+        public function registerExtension(\Happytodev\Blogr\Services\ExtensionRegistry $registry): void {}
+        public function registerLinkTypes(\Happytodev\Blogr\Services\LinkTypeRegistry $registry): void {}
+    };
+
+    expect($extension->getVersion())->toBe(\Happytodev\BlogrDocs\Blogr::VERSION);
+});
