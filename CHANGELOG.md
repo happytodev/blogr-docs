@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.2.5](https://github.com/happytodev/blogr-docs/compare/v1.2.4...v1.2.5) - 2026-07-05
+
+### 🐛 Bug Fixes
+
+- **Livewire 419**: Register all blogr-docs Filament pages as Livewire component aliases in `packageRegistered()`. Filament's panel middleware (`SetUpPanel`) does not run on `/livewire/update`, so components were never registered in Livewire's `ComponentRegistry`. When Livewire verified the release token, `nameToClass()` fell through to `generateClassFromName()` which prepended `App\Http\Livewire` namespace, producing a non-existent class → `ComponentNotFoundException` → `LivewireReleaseTokenMismatchException` → 419.
+
 ## [v1.2.4](https://github.com/happytodev/blogr-docs/compare/v1.2.3...v1.2.4) - 2026-07-05
 
 ### 🐛 Bug Fixes
