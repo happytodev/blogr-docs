@@ -57,9 +57,6 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
             $environment->addExtension(new EmbedExtension);
             $environment->addExtension(new TableExtension);
 
-            $environment->addRenderer(FencedCode::class, new ShikiCodeBlockRenderer);
-            $environment->addRenderer(IndentedCode::class, new ShikiCodeBlockRenderer);
-
             return new MarkdownConverter($environment);
         });
     }
@@ -117,16 +114,6 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
     protected function registerExtensions(): void
     {
         $this->app->booted(function () {
-            // Auto-register the Filament plugin so users don't need BlogrDocsPlugin::make()
-            if (class_exists(\Filament\Facades\Filament::class)) {
-                try {
-                    $panel = filament()->getPanel('admin');
-                    $panel->plugin(\Happytodev\BlogrDocs\BlogrDocsPlugin::make());
-                } catch (\Exception $e) {
-                    // Panel not ready yet — will be registered via standard discovery
-                }
-            }
-
             if (! app()->bound(ExtensionRegistry::class)) {
                 return;
             }
