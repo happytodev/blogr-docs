@@ -1,10 +1,16 @@
 # Changelog
 
+## [v1.2.7](https://github.com/happytodev/blogr-docs/compare/v1.2.6...v1.2.7) - 2026-07-05
+
+### 🧪 Tests
+
+- **regression test**: Add `all page components are resolvable from Livewire ComponentRegistry` test validating every Filament page component is registered as a Livewire alias. Simulates production config (`livewire.class_namespace = App\Livewire`). Catches the `ComponentNotFoundException` → `LivewireReleaseTokenMismatchException` → 419 chain automatically on CI.
+
 ## [v1.2.6](https://github.com/happytodev/blogr-docs/compare/v1.2.5...v1.2.6) - 2026-07-05
 
 ### 🐛 Bug Fixes
 
-- **Livewire 419**: Register all blogr-docs Filament pages as Livewire component aliases in `packageBooted()`. The ComponentRegistry may not be fully initialized during the `register()` phase if blogr-docs is loaded before Livewire — `app(ComponentRegistry::class)` creates a fresh instance that is later replaced by Livewire's `Mechanism::register()`, causing aliases to be lost. Moving to `boot()` guarantees Livewire is fully loaded.
+- **Livewire 419**: Register all blogr-docs Filament pages as Livewire component aliases in `packageBooted()` — fix timing issue where `app(ComponentRegistry::class)` could return a fresh instance if blogr-docs loaded before Livewire during the `register()` phase.
 
 ## [v1.2.4](https://github.com/happytodev/blogr-docs/compare/v1.2.3...v1.2.4) - 2026-07-05
 

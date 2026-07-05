@@ -110,3 +110,21 @@ test('extension version matches Blogr::VERSION', function () {
 
     expect($extension->getVersion())->toBe(\Happytodev\BlogrDocs\Blogr::VERSION);
 });
+
+test('all page components are resolvable from Livewire ComponentRegistry', function () {
+    $pages = [
+        \Happytodev\BlogrDocs\Filament\Resources\Pages\CreateDocArticle::class,
+        \Happytodev\BlogrDocs\Filament\Resources\Pages\EditDocArticle::class,
+        \Happytodev\BlogrDocs\Filament\Resources\Pages\ListDocArticles::class,
+        \Happytodev\BlogrDocs\Filament\Resources\Pages\CreateLearningPath::class,
+        \Happytodev\BlogrDocs\Filament\Resources\Pages\EditLearningPath::class,
+        \Happytodev\BlogrDocs\Filament\Resources\Pages\ListLearningPaths::class,
+        \Happytodev\BlogrDocs\Filament\Pages\DocsSettings::class,
+    ];
+
+    foreach ($pages as $page) {
+        $name = app(\Livewire\Mechanisms\ComponentRegistry::class)->getName($page);
+        $resolved = app(\Livewire\Mechanisms\ComponentRegistry::class)->getClass($name);
+        expect($resolved)->toBe($page);
+    }
+});

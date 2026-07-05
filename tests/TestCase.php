@@ -25,6 +25,7 @@ class TestCase extends Orchestra
     {
         return [
             \Barryvdh\DomPDF\ServiceProvider::class,
+            \Livewire\LivewireServiceProvider::class,
             BlogrDocsServiceProvider::class,
         ];
     }
@@ -47,5 +48,7 @@ class TestCase extends Orchestra
 
         $app['config']->set('blogr-docs.enabled', true);
         $app['config']->set('blogr-docs.prefix', 'docs');
+
+        $app['config']->set('livewire.class_namespace', 'App\\Livewire');
     }
 }
