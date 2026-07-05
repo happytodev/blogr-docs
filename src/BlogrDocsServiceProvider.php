@@ -2,14 +2,11 @@
 
 namespace Happytodev\BlogrDocs;
 
-use Happytodev\Blogr\Rendering\ShikiCodeBlockRenderer;
+use Filament\PanelRegistry;
 use Happytodev\Blogr\Services\ExtensionRegistry;
-use Happytodev\Blogr\Services\LinkTypeRegistry;
 use Happytodev\BlogrDocs\Extensions\MediaEmbedAdapter;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
-use League\CommonMark\Extension\CommonMark\Node\Block\FencedCode;
-use League\CommonMark\Extension\CommonMark\Node\Block\IndentedCode;
 use League\CommonMark\Extension\Embed\EmbedExtension;
 use League\CommonMark\Extension\Table\TableExtension;
 use League\CommonMark\MarkdownConverter;
@@ -58,6 +55,18 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
             $environment->addExtension(new TableExtension);
 
             return new MarkdownConverter($environment);
+        });
+
+        $this->app->singleton(BlogrDocsPlugin::class, fn () => new BlogrDocsPlugin);
+
+        $this->app->afterResolving(PanelRegistry::class, function (PanelRegistry $registry): void {
+            $panel = $registry->get('admin');
+
+            if (! $panel) {
+                return;
+            }
+
+            $panel->plugin($this->app->make(BlogrDocsPlugin::class));
         });
     }
 
@@ -113,31 +122,9 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
 
     protected function registerExtensions(): void
     {
-        $this->app->booted(function () {
-            if (! app()->bound(ExtensionRegistry::class)) {
-                return;
-            }
-
-            $registry = app(ExtensionRegistry::class);
-
-            $registry->register(new class implements \Happytodev\Blogr\Contracts\BlogrExtension
-            {
-                public function getId(): string { return 'blogr-docs'; }
-                public function getName(): string { return 'Blogr Docs'; }
-                public function getDescription(): string { return 'Hierarchical documentation system with learning paths, media embeds, and PDF export.'; }
-                public function getVersion(): string { return \Happytodev\BlogrDocs\Blogr::VERSION; }
-                public function getAuthor(): string { return 'HappyToDev'; }
-                public function getHomepage(): ?string { return null; }
-                public function getDependencies(): array { return ['blogr-core']; }
-
-                public function getSettingsUrl(): ?string
-                {
-                    return config('filament.path').'/'.config('blogr-docs.prefix', 'docs').'/settings';
-                }
-
-                public function registerExtension(ExtensionRegistry $registry): void {}
-                public function registerLinkTypes(LinkTypeRegistry $registry): void {}
-            });
-        });
+        if ($this->app->has(ExtensionRegistry::class)) {
+            $registry = $this->app->make(ExtensionRegistry::class);
+            $registry->register($this->app->make(BlogrDocsPlugin::class));
+        }
     }
 }
