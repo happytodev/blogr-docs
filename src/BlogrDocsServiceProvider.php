@@ -5,11 +5,22 @@ namespace Happytodev\BlogrDocs;
 use Filament\PanelRegistry;
 use Happytodev\Blogr\Services\ExtensionRegistry;
 use Happytodev\BlogrDocs\Extensions\MediaEmbedAdapter;
+use Happytodev\BlogrDocs\Filament\Pages\DocsSettings;
+use Happytodev\BlogrDocs\Filament\Resources\DocArticleResource;
+use Happytodev\BlogrDocs\Filament\Resources\DocLearningPathResource;
+use Happytodev\BlogrDocs\Filament\Resources\Pages\CreateDocArticle;
+use Happytodev\BlogrDocs\Filament\Resources\Pages\CreateLearningPath;
+use Happytodev\BlogrDocs\Filament\Resources\Pages\EditDocArticle;
+use Happytodev\BlogrDocs\Filament\Resources\Pages\EditLearningPath;
+use Happytodev\BlogrDocs\Filament\Resources\Pages\ListDocArticles;
+use Happytodev\BlogrDocs\Filament\Resources\Pages\ListLearningPaths;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\Embed\EmbedExtension;
 use League\CommonMark\Extension\Table\TableExtension;
 use League\CommonMark\MarkdownConverter;
+use Livewire\Livewire;
+use Livewire\Mechanisms\ComponentRegistry;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -68,6 +79,26 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
 
             $panel->plugin($this->app->make(BlogrDocsPlugin::class));
         });
+
+        $this->registerLivewireComponents();
+    }
+
+    protected function registerLivewireComponents(): void
+    {
+        $components = [
+            CreateDocArticle::class,
+            EditDocArticle::class,
+            ListDocArticles::class,
+            CreateLearningPath::class,
+            EditLearningPath::class,
+            ListLearningPaths::class,
+            DocsSettings::class,
+        ];
+
+        foreach ($components as $componentClass) {
+            $componentName = app(ComponentRegistry::class)->getName($componentClass);
+            Livewire::component($componentName, $componentClass);
+        }
     }
 
     public function packageBooted(): void
