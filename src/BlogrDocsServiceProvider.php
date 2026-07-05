@@ -79,8 +79,13 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
 
             $panel->plugin($this->app->make(BlogrDocsPlugin::class));
         });
+    }
 
+    public function packageBooted(): void
+    {
         $this->registerLivewireComponents();
+        $this->registerRoutes();
+        $this->registerExtensions();
     }
 
     protected function registerLivewireComponents(): void
@@ -96,15 +101,10 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
         ];
 
         foreach ($components as $componentClass) {
-            $componentName = app(ComponentRegistry::class)->getName($componentClass);
-            Livewire::component($componentName, $componentClass);
+            $registry = app(ComponentRegistry::class);
+            $componentName = $registry->getName($componentClass);
+            $registry->component($componentName, $componentClass);
         }
-    }
-
-    public function packageBooted(): void
-    {
-        $this->registerRoutes();
-        $this->registerExtensions();
     }
 
     protected function registerRoutes(): void
