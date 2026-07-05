@@ -117,6 +117,16 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
     protected function registerExtensions(): void
     {
         $this->app->booted(function () {
+            // Auto-register the Filament plugin so users don't need BlogrDocsPlugin::make()
+            if (class_exists(\Filament\Facades\Filament::class)) {
+                try {
+                    $panel = filament()->getPanel('admin');
+                    $panel->plugin(\Happytodev\BlogrDocs\BlogrDocsPlugin::make());
+                } catch (\Exception $e) {
+                    // Panel not ready yet — will be registered via standard discovery
+                }
+            }
+
             if (! app()->bound(ExtensionRegistry::class)) {
                 return;
             }
