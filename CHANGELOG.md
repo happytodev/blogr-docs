@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.2.8](https://github.com/happytodev/blogr-docs/compare/v1.2.7...v1.2.8) - 2026-07-05
+
+### ✨ Features
+
+- **syntax highlighting**: Register `ShikiCodeBlockRenderer` in the docs Markdown converter for server-side code syntax highlighting via `spatie/shiki-php`. Language badges, copy buttons, and line numbers are already styled in the blog layout.
+
 ## [v1.2.7](https://github.com/happytodev/blogr-docs/compare/v1.2.6...v1.2.7) - 2026-07-05
 
 ### 🧪 Tests

@@ -14,6 +14,9 @@ use Happytodev\BlogrDocs\Filament\Resources\Pages\EditDocArticle;
 use Happytodev\BlogrDocs\Filament\Resources\Pages\EditLearningPath;
 use Happytodev\BlogrDocs\Filament\Resources\Pages\ListDocArticles;
 use Happytodev\BlogrDocs\Filament\Resources\Pages\ListLearningPaths;
+use Happytodev\Blogr\Rendering\ShikiCodeBlockRenderer;
+use League\CommonMark\Extension\CommonMark\Node\Block\FencedCode;
+use League\CommonMark\Extension\CommonMark\Node\Block\IndentedCode;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\Embed\EmbedExtension;
@@ -64,6 +67,11 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
             $environment->addExtension(new CommonMarkCoreExtension);
             $environment->addExtension(new EmbedExtension);
             $environment->addExtension(new TableExtension);
+
+            if (class_exists(ShikiCodeBlockRenderer::class)) {
+                $environment->addRenderer(FencedCode::class, new ShikiCodeBlockRenderer);
+                $environment->addRenderer(IndentedCode::class, new ShikiCodeBlockRenderer);
+            }
 
             return new MarkdownConverter($environment);
         });
