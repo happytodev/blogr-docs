@@ -1,6 +1,6 @@
 # Changelog
 
-## [v1.2.5](https://github.com/happytodev/blogr-docs/compare/v1.2.4...v1.2.5) - 2026-07-05
+## [v1.2.6](https://github.com/happytodev/blogr-docs/compare/v1.2.5...v1.2.6) - 2026-07-05
 
 ### 🐛 Bug Fixes
 
