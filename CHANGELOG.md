@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.2.4](https://github.com/happytodev/blogr-docs/compare/v1.2.3...v1.2.4) - 2026-07-05
+
+### 🐛 Bug Fixes
+
+- **route collision**: Localized routes (`blogr-docs.pdf`, `blogr-docs.index`, `blogr-docs.show`) now use a `.localized` suffix to avoid name collision with non-localized routes. This fixes `LogicException` when running `php artisan optimize` and prevents potential route cache corruption when locales are enabled.
+
 ## [v1.2.3](https://github.com/happytodev/blogr-docs/compare/v1.2.2...v1.2.3) - 2026-07-05
 
 ### 🐛 Bug Fixes
