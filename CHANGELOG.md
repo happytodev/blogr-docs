@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.2.9](https://github.com/happytodev/blogr-docs/compare/v1.2.8...v1.2.9) - 2026-07-05
+
+### 🐛 Bug Fixes
+
+- **syntax highlighting**: Ensure Node.js binary is discoverable on Linux servers by adding `/usr/bin`, `/bin`, `/usr/local/bin` to PATH in `ensureNodeInPath()`. Resolves `shiki-fallback` when Node is installed via apt (at `/usr/bin/node`) but PHP-FPM has a restricted PATH.
+
 ## [v1.2.8](https://github.com/happytodev/blogr-docs/compare/v1.2.7...v1.2.8) - 2026-07-05
 
 ### ✨ Features

@@ -91,9 +91,27 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
+        $this->ensureNodeInPath();
         $this->registerLivewireComponents();
         $this->registerRoutes();
         $this->registerExtensions();
+    }
+
+    protected function ensureNodeInPath(): void
+    {
+        $nodeCandidates = ['/usr/bin', '/usr/local/bin', '/bin', '/opt/homebrew/bin'];
+        $currentPath = getenv('PATH') ?: '';
+        $needed = [];
+
+        foreach ($nodeCandidates as $dir) {
+            if (is_dir($dir) && ! str_contains($currentPath, $dir)) {
+                $needed[] = $dir;
+            }
+        }
+
+        if ($needed) {
+            putenv('PATH=' . implode(PATH_SEPARATOR, $needed) . PATH_SEPARATOR . $currentPath);
+        }
     }
 
     protected function registerLivewireComponents(): void
