@@ -9,6 +9,7 @@ use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
+use Livewire\WithFileUploads;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
@@ -16,6 +17,8 @@ use Filament\Schemas\Schema;
 
 class DocsSettings extends Page
 {
+    use WithFileUploads;
+
     protected string $view = 'blogr-docs::docs-settings';
 
     public static function getNavigationIcon(): string
@@ -58,9 +61,11 @@ class DocsSettings extends Page
 
     public bool $pdfWatermarkEnabled = false;
     public string $pdfWatermarkText = 'Confidential';
-    public $pdfWatermarkImage = null;
+    public array $pdfWatermarkImage = [];
     public $pdfWatermarkOpacity = 0.2;
     public string $pdfWatermarkPosition = 'center';
+    public int $pdfWatermarkRotation = -45;
+    public int $pdfWatermarkSize = 60;
 
     // Embeds
     public bool $embedYoutube = true;
@@ -88,9 +93,12 @@ class DocsSettings extends Page
         $this->pdfOrientation = config('blogr-docs.pdf.orientation', 'portrait');
         $this->pdfWatermarkEnabled = config('blogr-docs.pdf.watermark.enabled', false);
         $this->pdfWatermarkText = config('blogr-docs.pdf.watermark.text', 'Confidential');
-        $this->pdfWatermarkImage = config('blogr-docs.pdf.watermark.image');
+        $img = config('blogr-docs.pdf.watermark.image');
+        $this->pdfWatermarkImage = $img ? [$img] : [];
         $this->pdfWatermarkOpacity = config('blogr-docs.pdf.watermark.opacity', 0.2);
         $this->pdfWatermarkPosition = config('blogr-docs.pdf.watermark.position', 'center');
+        $this->pdfWatermarkRotation = config('blogr-docs.pdf.watermark.rotation', -45);
+        $this->pdfWatermarkSize = config('blogr-docs.pdf.watermark.size', 60);
         $this->embedYoutube = config('blogr-docs.embeds.youtube', true);
         $this->embedVimeo = config('blogr-docs.embeds.vimeo', true);
         $this->embedDailymotion = config('blogr-docs.embeds.dailymotion', true);
@@ -239,6 +247,8 @@ class DocsSettings extends Page
                             ->maxValue(1.0)
                             ->step(0.1)
                             ->default(0.2)
+                            ->live()
+                            ->hint(fn ($state) => $state)
                             ->visible(fn () => $this->pdfEnabled && $this->pdfWatermarkEnabled)
                             ->columnSpan(1),
 
@@ -251,6 +261,28 @@ class DocsSettings extends Page
                                 'bottom-left' => 'Bottom left',
                                 'bottom-right' => 'Bottom right',
                             ])
+                            ->visible(fn () => $this->pdfEnabled && $this->pdfWatermarkEnabled)
+                            ->columnSpan(1),
+
+                        Slider::make('pdfWatermarkRotation')
+                            ->label('Rotation')
+                            ->minValue(-90)
+                            ->maxValue(90)
+                            ->step(5)
+                            ->default(-45)
+                            ->live()
+                            ->hint(fn ($state) => $state.'°')
+                            ->visible(fn () => $this->pdfEnabled && $this->pdfWatermarkEnabled)
+                            ->columnSpan(1),
+
+                        Slider::make('pdfWatermarkSize')
+                            ->label('Size')
+                            ->minValue(20)
+                            ->maxValue(200)
+                            ->step(10)
+                            ->default(60)
+                            ->live()
+                            ->hint(fn ($state) => $state.'px')
                             ->visible(fn () => $this->pdfEnabled && $this->pdfWatermarkEnabled)
                             ->columnSpan(1),
                     ])
@@ -310,6 +342,9 @@ class DocsSettings extends Page
         $config['pdf']['watermark']['image'] = $this->pdfWatermarkImage;
         $config['pdf']['watermark']['opacity'] = (float) $this->pdfWatermarkOpacity;
         $config['pdf']['watermark']['position'] = $this->pdfWatermarkPosition;
+        $config['pdf']['watermark']['rotation'] = (int) $this->pdfWatermarkRotation;
+        $config['pdf']['watermark']['size'] = (int) $this->pdfWatermarkSize;
+        $config['pdf']['watermark']['image'] = reset($this->pdfWatermarkImage) ?: null;
         $config['embeds']['youtube'] = $this->embedYoutube;
         $config['embeds']['vimeo'] = $this->embedVimeo;
         $config['embeds']['dailymotion'] = $this->embedDailymotion;
