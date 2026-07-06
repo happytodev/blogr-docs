@@ -11,10 +11,10 @@
 @endsection
 
 @section('content')
-<div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="flex gap-8">
         @if(isset($tree) && $tree->isNotEmpty())
-            <aside class="w-64 flex-shrink-0 hidden lg:block">
+            <aside class="w-56 flex-shrink-0 hidden lg:block">
                 <nav class="sticky top-24 overflow-y-auto max-h-[calc(100vh-8rem)]">
                     <div class="mb-4">
                         @if(config('blogr-docs.search.enabled', true))
@@ -38,7 +38,7 @@
                 </article>
 
                 @if(! empty(trim($__env->yieldContent('toc'))))
-                    <aside class="w-48 flex-shrink-0 hidden xl:block">
+                    <aside class="w-40 flex-shrink-0 hidden xl:block">
                         @yield('toc')
                     </aside>
                 @endif
