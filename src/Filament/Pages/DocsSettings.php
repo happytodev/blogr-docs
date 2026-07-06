@@ -94,7 +94,12 @@ class DocsSettings extends Page
         $this->pdfWatermarkEnabled = config('blogr-docs.pdf.watermark.enabled', false);
         $this->pdfWatermarkText = config('blogr-docs.pdf.watermark.text', 'Confidential');
         $img = config('blogr-docs.pdf.watermark.image');
-        $this->pdfWatermarkImage = $img ? [basename($img)] : [];
+        if ($img) {
+            $exists = \Illuminate\Support\Facades\Storage::disk('public')->exists('docs/pdf-watermarks/' . basename($img));
+            $this->pdfWatermarkImage = $exists ? [basename($img)] : [];
+        } else {
+            $this->pdfWatermarkImage = [];
+        }
         $this->pdfWatermarkOpacity = config('blogr-docs.pdf.watermark.opacity', 0.2);
         $this->pdfWatermarkPosition = config('blogr-docs.pdf.watermark.position', 'center');
         $this->pdfWatermarkRotation = config('blogr-docs.pdf.watermark.rotation', -45);
@@ -333,11 +338,13 @@ class DocsSettings extends Page
         if (! empty($this->pdfWatermarkImage)) {
             $file = reset($this->pdfWatermarkImage);
             if (is_object($file) && method_exists($file, 'store')) {
+                \Illuminate\Support\Facades\Storage::disk('public')->makeDirectory('docs/pdf-watermarks');
                 $watermarkImage = $file->store('docs/pdf-watermarks', 'public');
-            } elseif (is_string($file)) {
+            } elseif (is_string($file) && ! str_contains($file, 'livewire-tmp')) {
                 $watermarkImage = $file;
             }
         }
+        $watermarkImage = $watermarkImage ? basename($watermarkImage) : null;
 
         $config['enabled'] = $this->enabled;
         $config['prefix'] = $this->prefix;
