@@ -2,7 +2,9 @@
 
 namespace Happytodev\BlogrDocs\Filament\Pages;
 
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Slider;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -54,6 +56,12 @@ class DocsSettings extends Page
     public string $pdfPageSize = 'A4';
     public string $pdfOrientation = 'portrait';
 
+    public bool $pdfWatermarkEnabled = false;
+    public string $pdfWatermarkText = 'Confidential';
+    public $pdfWatermarkImage = null;
+    public $pdfWatermarkOpacity = 0.2;
+    public string $pdfWatermarkPosition = 'center';
+
     // Embeds
     public bool $embedYoutube = true;
     public bool $embedVimeo = true;
@@ -78,6 +86,11 @@ class DocsSettings extends Page
         $this->pdfDriver = config('blogr-docs.pdf.driver', 'dompdf');
         $this->pdfPageSize = config('blogr-docs.pdf.page_size', 'A4');
         $this->pdfOrientation = config('blogr-docs.pdf.orientation', 'portrait');
+        $this->pdfWatermarkEnabled = config('blogr-docs.pdf.watermark.enabled', false);
+        $this->pdfWatermarkText = config('blogr-docs.pdf.watermark.text', 'Confidential');
+        $this->pdfWatermarkImage = config('blogr-docs.pdf.watermark.image');
+        $this->pdfWatermarkOpacity = config('blogr-docs.pdf.watermark.opacity', 0.2);
+        $this->pdfWatermarkPosition = config('blogr-docs.pdf.watermark.position', 'center');
         $this->embedYoutube = config('blogr-docs.embeds.youtube', true);
         $this->embedVimeo = config('blogr-docs.embeds.vimeo', true);
         $this->embedDailymotion = config('blogr-docs.embeds.dailymotion', true);
@@ -199,6 +212,47 @@ class DocsSettings extends Page
                             ->visible(fn () => $this->pdfEnabled)
                             ->required()
                             ->columnSpan(1),
+
+                        Toggle::make('pdfWatermarkEnabled')
+                            ->label('Watermark')
+                            ->helperText('Add a watermark text or image to PDF exports')
+                            ->live()
+                            ->visible(fn () => $this->pdfEnabled)
+                            ->columnSpan(1),
+
+                        TextInput::make('pdfWatermarkText')
+                            ->label('Watermark text')
+                            ->visible(fn () => $this->pdfEnabled && $this->pdfWatermarkEnabled)
+                            ->columnSpan(1),
+
+                        FileUpload::make('pdfWatermarkImage')
+                            ->label('Watermark image')
+                            ->image()
+                            ->directory('docs/pdf-watermarks')
+                            ->visibility('public')
+                            ->visible(fn () => $this->pdfEnabled && $this->pdfWatermarkEnabled)
+                            ->columnSpan(1),
+
+                        Slider::make('pdfWatermarkOpacity')
+                            ->label('Opacity')
+                            ->minValue(0.1)
+                            ->maxValue(1.0)
+                            ->step(0.1)
+                            ->default(0.2)
+                            ->visible(fn () => $this->pdfEnabled && $this->pdfWatermarkEnabled)
+                            ->columnSpan(1),
+
+                        Select::make('pdfWatermarkPosition')
+                            ->label('Position')
+                            ->options([
+                                'center' => 'Center',
+                                'top-left' => 'Top left',
+                                'top-right' => 'Top right',
+                                'bottom-left' => 'Bottom left',
+                                'bottom-right' => 'Bottom right',
+                            ])
+                            ->visible(fn () => $this->pdfEnabled && $this->pdfWatermarkEnabled)
+                            ->columnSpan(1),
                     ])
                     ->columns(2),
 
@@ -251,6 +305,11 @@ class DocsSettings extends Page
         $config['pdf']['driver'] = $this->pdfDriver;
         $config['pdf']['page_size'] = $this->pdfPageSize;
         $config['pdf']['orientation'] = $this->pdfOrientation;
+        $config['pdf']['watermark']['enabled'] = $this->pdfWatermarkEnabled;
+        $config['pdf']['watermark']['text'] = $this->pdfWatermarkText;
+        $config['pdf']['watermark']['image'] = $this->pdfWatermarkImage;
+        $config['pdf']['watermark']['opacity'] = (float) $this->pdfWatermarkOpacity;
+        $config['pdf']['watermark']['position'] = $this->pdfWatermarkPosition;
         $config['embeds']['youtube'] = $this->embedYoutube;
         $config['embeds']['vimeo'] = $this->embedVimeo;
         $config['embeds']['dailymotion'] = $this->embedDailymotion;

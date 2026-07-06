@@ -20,6 +20,66 @@ class DocController extends Controller
     public function index(Request $request, ?string $locale = null): mixed
     {
         $currentLocale = $locale ?? config('app.locale', 'en');
+        $query = $request->get('q');
+
+        if ($query) {
+            $articleIds = DocArticleTranslation::where('locale', $currentLocale)
+                ->where(function ($q) use ($query) {
+                    $q->where('title', 'like', "%{$query}%")
+                      ->orWhere('content', 'like', "%{$query}%")
+                      ->orWhere('excerpt', 'like', "%{$query}%")
+                      ->orWhere('slug', 'like', "%{$query}%");
+                })
+                ->pluck('doc_article_id');
+
+            $articles = DocArticle::with('translations')
+                ->whereIn('id', $articleIds)
+                ->where('is_published', true)
+                ->ordered()
+                ->get();
+
+            $localesEnabled = config('blogr.locales.enabled', false);
+            $prefix = config('blogr-docs.prefix', 'docs');
+
+            $results = $articles->map(function ($article) use ($currentLocale, $localesEnabled, $prefix) {
+                $translation = $article->translation($currentLocale) ?? $article->defaultTranslation();
+                if (! $translation) return null;
+
+                $segments = [];
+                $parent = $article->parent;
+                while ($parent) {
+                    $pt = $parent->translation($currentLocale) ?? $parent->defaultTranslation();
+                    if ($pt) array_unshift($segments, $pt->slug);
+                    $parent = $parent->parent;
+                }
+                $segments[] = $translation->slug;
+                $path = implode('/', $segments);
+
+                $url = $localesEnabled
+                    ? route('blogr-docs.show', ['locale' => $currentLocale, 'path' => $path])
+                    : route('blogr-docs.show', ['path' => $path]);
+
+                return [
+                    'title' => $translation->title,
+                    'excerpt' => $translation->excerpt,
+                    'url' => $url,
+                ];
+            })->filter()->values();
+
+            $seoData = [
+                'title' => __('blogr-docs::ui.search_results', ['query' => $query]),
+                'description' => null,
+            ];
+
+            return view('blogr-docs::search', [
+                'results' => $results,
+                'query' => $query,
+                'locale' => $currentLocale,
+                'seoTitle' => $seoData['title'],
+                'seoDescription' => $seoData['description'],
+                'canonicalUrl' => url('/'.$prefix.'?q='.urlencode($query)),
+            ]);
+        }
 
         $tree = $this->treeHelper->buildTree($currentLocale);
 
@@ -162,6 +222,11 @@ class DocController extends Controller
             'keywords' => $translation->seo_keywords,
         ];
 
+        $pathForUrl = implode('/', $segments);
+        $pdfUrl = $localesEnabled
+            ? route('blogr-docs.pdf.localized', ['locale' => $displayLocale, 'path' => $pathForUrl])
+            : route('blogr-docs.pdf', ['path' => $pathForUrl]);
+
         return view('blogr-docs::show', [
             'article' => $article,
             'translation' => $translation,
@@ -181,6 +246,7 @@ class DocController extends Controller
             'seoDescription' => $seoData['description'],
             'seoKeywords' => $seoData['keywords'],
             'canonicalUrl' => $translation->url(),
+            'pdfUrl' => $pdfUrl,
             'displayToc' => $article->display_toc,
             'tocHtml' => $tocHtml,
         ]);
@@ -319,7 +385,7 @@ class DocController extends Controller
                 $text = trim(strip_tags($contentWithoutPermalink));
                 $id = Str::slug($text);
 
-                $heading = '<h'.$level.$attributes.' id="'.$id.'">';
+                $heading = '<h'.$level.$attributes.' id="'.$id.'" style="scroll-margin-top: 6rem">';
                 $heading .= '<a href="#'.$id.'" class="heading-permalink" aria-hidden="true">#</a> ';
                 $heading .= $inner;
                 $heading .= '</h'.$level.'>';

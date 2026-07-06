@@ -65,9 +65,43 @@
             margin: 8px 0;
             padding-left: 20px;
         }
+        .watermark {
+            position: fixed;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: {{ config('blogr-docs.pdf.watermark.opacity', 0.2) }};
+            font-size: 60px;
+            color: #999;
+            transform: rotate(-45deg);
+            @if(config('blogr-docs.pdf.watermark.position', 'center') === 'center')
+                top: 50%; left: 50%; margin-left: -200px; margin-top: -100px; width: 400px; text-align: center;
+            @elseif(config('blogr-docs.pdf.watermark.position', 'center') === 'top-left')
+                top: 40px; left: 40px;
+            @elseif(config('blogr-docs.pdf.watermark.position', 'center') === 'top-right')
+                top: 40px; right: 40px;
+            @elseif(config('blogr-docs.pdf.watermark.position', 'center') === 'bottom-left')
+                bottom: 40px; left: 40px;
+            @elseif(config('blogr-docs.pdf.watermark.position', 'center') === 'bottom-right')
+                bottom: 40px; right: 40px;
+            @endif
+        }
+        .watermark img {
+            max-width: 300px;
+            max-height: 300px;
+        }
     </style>
 </head>
 <body>
+    @if(config('blogr-docs.pdf.watermark.enabled', false))
+        <div class="watermark">
+            @if(config('blogr-docs.pdf.watermark.image'))
+                <img src="{{ public_path(config('blogr-docs.pdf.watermark.image')) }}" alt="">
+            @else
+                {{ config('blogr-docs.pdf.watermark.text', 'Confidential') }}
+            @endif
+        </div>
+    @endif
+
     <h1>{{ $title }}</h1>
     @if(!empty($seoDescription))
         <p style="font-size: 11pt; color: #666; margin-bottom: 20px;">{{ $seoDescription }}</p>

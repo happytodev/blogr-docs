@@ -1,5 +1,17 @@
 # Changelog
 
+## [v1.6.0](https://github.com/happytodev/blogr-docs/compare/v1.5.0...v1.6.0) - 2026-07-06
+
+### ✨ Features
+
+- **PDF watermark**: Watermark configurable from DocsSettings page (text or image, opacity, position). Rendered as a rotated overlay on PDF exports.
+- **search**: Server-side search by title, content, excerpt, slug is now implemented via `?q=` query parameter. Results page with links to matching articles.
+
+### 🐛 Bug Fixes
+
+- **TOC anchor offset**: Headings now have `style="scroll-margin-top: 6rem"` so clicks from the TOC are not hidden behind the sticky header.
+- **PDF URL**: PDF link now uses the route helper instead of string concatenation, fixing URLs with `?locale=en/pdf` when locales are enabled.
+
 ## [v1.5.0](https://github.com/happytodev/blogr-docs/compare/v1.4.2...v1.5.0) - 2026-07-06
 
 ### ✨ Features

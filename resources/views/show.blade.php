@@ -60,8 +60,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </button>
-                @if(config('blogr-docs.pdf.enabled', false) && isset($canonicalUrl))
-                    <a href="{{ $canonicalUrl }}/pdf"
+                @if(config('blogr-docs.pdf.enabled', false) && isset($pdfUrl))
+                    <a href="{{ $pdfUrl }}"
                        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                         <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                             <path d="M10 2a.75.75 0 01.75.75v7.5l1.97-1.97a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0L6.47 9.34a.75.75 0 111.06-1.06l1.97 1.97V2.75A.75.75 0 0110 2z"/>

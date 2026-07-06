@@ -21,4 +21,7 @@ return [
     'translation_available_in' => 'Available in:',
     'enter_reading_mode' => 'Enter reading mode',
     'exit_reading_mode' => 'Exit reading mode',
+    'search_results' => 'Search results for ":query"',
+    'search_results_default' => 'Search results',
+    'back_to_docs' => 'Back to documentation',
 ];

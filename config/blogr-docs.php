@@ -30,6 +30,14 @@ return array (
     'driver' => 'dompdf',
     'page_size' => 'A4',
     'orientation' => 'portrait',
+    'watermark' => 
+    array (
+      'enabled' => true,
+      'text' => 'provided by HappyToDev',
+      'image' => NULL,
+      'opacity' => 0.2,
+      'position' => 'center',
+    ),
   ),
   'seo' => 
   array (
