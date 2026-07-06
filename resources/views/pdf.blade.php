@@ -70,9 +70,9 @@
             z-index: 9999;
             pointer-events: none;
             opacity: {{ config('blogr-docs.pdf.watermark.opacity', 0.2) }};
-            font-size: 60px;
+            font-size: {{ config('blogr-docs.pdf.watermark.size', 60) }}px;
             color: #999;
-            transform: rotate(-45deg);
+            transform: rotate({{ config('blogr-docs.pdf.watermark.rotation', -45) }}deg);
             @if(config('blogr-docs.pdf.watermark.position', 'center') === 'center')
                 top: 50%; left: 50%; margin-left: -200px; margin-top: -100px; width: 400px; text-align: center;
             @elseif(config('blogr-docs.pdf.watermark.position', 'center') === 'top-left')
@@ -95,7 +95,13 @@
     @if(config('blogr-docs.pdf.watermark.enabled', false))
         <div class="watermark">
             @if(config('blogr-docs.pdf.watermark.image'))
-                <img src="{{ public_path(config('blogr-docs.pdf.watermark.image')) }}" alt="">
+                @php
+                    $watermarkPath = \Illuminate\Support\Facades\Storage::disk('public')
+                        ->path(config('blogr-docs.pdf.watermark.image'));
+                @endphp
+                @if(file_exists($watermarkPath))
+                    <img src="{{ $watermarkPath }}" alt="Watermark">
+                @endif
             @else
                 {{ config('blogr-docs.pdf.watermark.text', 'Confidential') }}
             @endif
