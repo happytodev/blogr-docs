@@ -120,12 +120,18 @@ class DocController extends Controller
             : collect();
 
         $htmlContent = null;
+        $tocHtml = null;
+
         if ($translation->content) {
             $converter = app('blogr-docs.converter');
             $htmlContent = $converter->convert($translation->content)->getContent();
 
-            if (config('blogr-docs.toc.enabled', true) && $article->display_toc) {
+            if (config('blogr-docs.toc.enabled', true)) {
                 $htmlContent = $this->injectHeadingIds($htmlContent);
+            }
+
+            if (config('blogr-docs.toc.enabled', true) && $article->display_toc) {
+                $tocHtml = $this->extractToc($htmlContent);
             }
         }
 
@@ -176,6 +182,7 @@ class DocController extends Controller
             'seoKeywords' => $seoData['keywords'],
             'canonicalUrl' => $translation->url(),
             'displayToc' => $article->display_toc,
+            'tocHtml' => $tocHtml,
         ]);
     }
 
@@ -235,6 +242,35 @@ class DocController extends Controller
         return $pdf->download(Str::slug($translation->title).'.pdf');
     }
 
+    private function extractToc(string $html): ?string
+    {
+        $maxLevel = config('blogr-docs.toc.max_level', 3);
+        $levels = implode('', range(2, $maxLevel));
+
+        preg_match_all(
+            '/<h(['.$levels.'])\s.*?id="([^"]+)".*?>(.*?)<\/h\1>/i',
+            $html,
+            $matches,
+            PREG_SET_ORDER
+        );
+
+        if (empty($matches)) {
+            return null;
+        }
+
+        $toc = '<ul class="toc-list space-y-1">';
+        foreach ($matches as $match) {
+            $level = $match[1];
+            $id = $match[2];
+            $text = preg_replace('/<a\b[^>]*>.*?<\/a>/i', '', $match[3]);
+            $text = trim(strip_tags($text));
+            $toc .= '<li class="toc-level-'.$level.'"><a href="#'.$id.'">'.e($text).'</a></li>';
+        }
+        $toc .= '</ul>';
+
+        return $toc;
+    }
+
     private function injectHeadingIds(string $html): string
     {
         $maxLevel = config('blogr-docs.toc.max_level', 3);
@@ -244,16 +280,19 @@ class DocController extends Controller
             function ($matches) {
                 $level = $matches[1];
                 $attributes = $matches[2];
-                $text = strip_tags($matches[3]);
+                $inner = $matches[3];
 
                 if (preg_match('/id=["\']/i', $attributes)) {
                     return $matches[0];
                 }
 
+                $contentWithoutPermalink = preg_replace('/<a\b[^>]*>.*?<\/a>/i', '', $inner);
+                $text = trim(strip_tags($contentWithoutPermalink));
                 $id = Str::slug($text);
+
                 $heading = '<h'.$level.$attributes.' id="'.$id.'">';
                 $heading .= '<a href="#'.$id.'" class="heading-permalink" aria-hidden="true">#</a> ';
-                $heading .= $text;
+                $heading .= $inner;
                 $heading .= '</h'.$level.'>';
 
                 return $heading;

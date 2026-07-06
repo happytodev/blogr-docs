@@ -3,6 +3,16 @@
 use Happytodev\BlogrDocs\Models\DocArticle;
 use Happytodev\BlogrDocs\Models\DocArticleTranslation;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Route;
+
+beforeEach(function () {
+    if (! Route::has('blog.feed')) {
+        Route::get('/feed', fn () => 'feed')->name('blog.feed');
+    }
+    if (! Route::has('blog.index')) {
+        Route::get('/blog', fn () => 'blog')->name('blog.index');
+    }
+});
 
 it('reads config with custom values', function () {
     Config::set('blogr-docs.enabled', true);
@@ -127,4 +137,64 @@ test('all page components are resolvable from Livewire ComponentRegistry', funct
         $resolved = app(\Livewire\Mechanisms\ComponentRegistry::class)->getClass($name);
         expect($resolved)->toBe($page);
     }
+});
+
+test('toc is rendered when display_toc is enabled', function () {
+    Config::set('blogr-docs.toc.enabled', true);
+
+    $article = \Happytodev\BlogrDocs\Models\DocArticle::create([
+        'position' => 0, 'is_published' => true,
+        'published_at' => now(), 'default_locale' => 'en',
+        'display_toc' => true,
+    ]);
+    \Happytodev\BlogrDocs\Models\DocArticleTranslation::create([
+        'doc_article_id' => $article->id, 'locale' => 'en',
+        'title' => 'TOC Test', 'slug' => 'toc-test',
+        'content' => "# Title\n\n## Introduction\n\nContent here.\n\n## Details\n\nMore content.\n\n### Sub detail\n\nDeep content.",
+    ]);
+
+    $response = $this->get('/docs/toc-test');
+    $response->assertStatus(200);
+
+    $response->assertSee('<ul class="toc-list space-y-1">', false);
+});
+
+test('toc is hidden when display_toc is disabled', function () {
+    Config::set('blogr-docs.toc.enabled', true);
+
+    $article = \Happytodev\BlogrDocs\Models\DocArticle::create([
+        'position' => 0, 'is_published' => true,
+        'published_at' => now(), 'default_locale' => 'en',
+        'display_toc' => false,
+    ]);
+    \Happytodev\BlogrDocs\Models\DocArticleTranslation::create([
+        'doc_article_id' => $article->id, 'locale' => 'en',
+        'title' => 'No TOC', 'slug' => 'no-toc',
+        'content' => "# Title\n\n## Heading\n\nContent.",
+    ]);
+
+    $response = $this->get('/docs/no-toc');
+    $response->assertStatus(200);
+
+    $response->assertDontSee('<ul class="toc-list">', false);
+});
+
+test('heading IDs are always injected regardless of display_toc', function () {
+    Config::set('blogr-docs.toc.enabled', true);
+
+    $article = \Happytodev\BlogrDocs\Models\DocArticle::create([
+        'position' => 0, 'is_published' => true,
+        'published_at' => now(), 'default_locale' => 'en',
+        'display_toc' => false,
+    ]);
+    \Happytodev\BlogrDocs\Models\DocArticleTranslation::create([
+        'doc_article_id' => $article->id, 'locale' => 'en',
+        'title' => 'Anchors', 'slug' => 'anchors',
+        'content' => "## Introduction\n\nBody.",
+    ]);
+
+    $response = $this->get('/docs/anchors');
+    $response->assertStatus(200);
+
+    $response->assertSee('id="introduction"', false);
 });
