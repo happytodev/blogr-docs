@@ -111,10 +111,11 @@
             @endphp
             @if($wmImage)
                 @php
+                    $wmImagePath = str_contains($wmImage, '/') ? $wmImage : 'docs/pdf-watermarks/' . $wmImage;
                     $watermarkPath = \Illuminate\Support\Facades\Storage::disk('public')
-                        ->path($wmImage);
+                        ->path($wmImagePath);
                     $watermarkMime = \Illuminate\Support\Facades\Storage::disk('public')
-                        ->mimeType($wmImage);
+                        ->mimeType($wmImagePath);
                 @endphp
                 @if(file_exists($watermarkPath))
                     <img src="data:{{ $watermarkMime }};base64,{{ base64_encode(file_get_contents($watermarkPath)) }}"

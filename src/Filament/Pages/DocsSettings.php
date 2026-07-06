@@ -94,7 +94,7 @@ class DocsSettings extends Page
         $this->pdfWatermarkEnabled = config('blogr-docs.pdf.watermark.enabled', false);
         $this->pdfWatermarkText = config('blogr-docs.pdf.watermark.text', 'Confidential');
         $img = config('blogr-docs.pdf.watermark.image');
-        $this->pdfWatermarkImage = $img ? [$img] : [];
+        $this->pdfWatermarkImage = $img ? [basename($img)] : [];
         $this->pdfWatermarkOpacity = config('blogr-docs.pdf.watermark.opacity', 0.2);
         $this->pdfWatermarkPosition = config('blogr-docs.pdf.watermark.position', 'center');
         $this->pdfWatermarkRotation = config('blogr-docs.pdf.watermark.rotation', -45);
@@ -354,7 +354,7 @@ class DocsSettings extends Page
         $config['pdf']['orientation'] = $this->pdfOrientation;
         $config['pdf']['watermark']['enabled'] = $this->pdfWatermarkEnabled;
         $config['pdf']['watermark']['text'] = $this->pdfWatermarkText;
-        $config['pdf']['watermark']['image'] = $watermarkImage;
+        $config['pdf']['watermark']['image'] = $watermarkImage ? basename($watermarkImage) : null;
         $config['pdf']['watermark']['opacity'] = (float) $this->pdfWatermarkOpacity;
         $config['pdf']['watermark']['position'] = $this->pdfWatermarkPosition;
         $config['pdf']['watermark']['rotation'] = (int) $this->pdfWatermarkRotation;
