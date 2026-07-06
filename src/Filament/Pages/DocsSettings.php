@@ -238,8 +238,20 @@ class DocsSettings extends Page
                             ->visible(fn () => $this->pdfEnabled && $this->pdfWatermarkEnabled)
                             ->columnSpan(1),
 
+                        \Filament\Forms\Components\Placeholder::make('pdfWatermarkPreview')
+                            ->label('Current watermark')
+                            ->content(function () {
+                                $img = config('blogr-docs.pdf.watermark.image');
+                                if (! $img) return '<span class="text-gray-400">No watermark image uploaded</span>';
+                                $url = \Illuminate\Support\Facades\Storage::disk('public')->url('docs/pdf-watermarks/' . $img);
+                                return '<img src="'.$url.'" style="max-width:200px; max-height:100px;" />';
+                            })
+                            ->html()
+                            ->visible(fn () => $this->pdfEnabled && $this->pdfWatermarkEnabled)
+                            ->columnSpan(1),
+
                         FileUpload::make('pdfWatermarkImage')
-                            ->label('Watermark image')
+                            ->label('Upload new watermark image')
                             ->image()
                             ->disk('public')
                             ->directory('docs/pdf-watermarks')
