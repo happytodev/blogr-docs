@@ -324,7 +324,7 @@ class DocController extends Controller
             return null;
         }
 
-        $toc = '<ul class="toc-list space-y-1">';
+        $toc = '<ul class="toc-list space-y-1 min-w-0">';
         $openLi = false;
         $openChildUl = false;
 
