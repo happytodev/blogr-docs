@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.6.5](https://github.com/happytodev/blogr-docs/compare/v1.6.4...v1.6.5) - 2026-07-06
+
+### 🐛 Bug Fixes
+
+- **watermark image persistence**: Store only the basename in config — the FileUpload `directory('docs/pdf-watermarks')` already handles the directory prefix, so storing the full path caused a double-prefix mismatch on page reload.
+
 ## [v1.6.4](https://github.com/happytodev/blogr-docs/compare/v1.6.3...v1.6.4) - 2026-07-06
 
 ### 🐛 Bug Fixes
