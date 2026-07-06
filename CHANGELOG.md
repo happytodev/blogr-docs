@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.6.7](https://github.com/happytodev/blogr-docs/compare/v1.6.6...v1.6.7) - 2026-07-06
+
+### 🐛 Bug Fixes
+
+- **watermark preview**: Store the full path (with `docs/pdf-watermarks/` prefix) in config. Filament's FileUpload uses `Storage::exists($file)` where `$file` is the raw state value — without the directory prefix it looked in the disk root and never found the file.
+
 ## [v1.6.6](https://github.com/happytodev/blogr-docs/compare/v1.6.5...v1.6.6) - 2026-07-06
 
 ### 🐛 Bug Fixes
