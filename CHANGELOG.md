@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.3.1](https://github.com/happytodev/blogr-docs/compare/v1.3.0...v1.3.1) - 2026-07-06
+
+### 🐛 Bug Fixes
+
+- **table action**: Fix `Class "Filament\Tables\Actions\Action" not found` — use correct namespace `Filament\Actions\Action` for table inline actions.
+
 ## [v1.3.0](https://github.com/happytodev/blogr-docs/compare/v1.2.9...v1.3.0) - 2026-07-05
 
 ### ✨ Features
