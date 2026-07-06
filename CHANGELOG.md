@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.3.0](https://github.com/happytodev/blogr-docs/compare/v1.2.9...v1.3.0) - 2026-07-05
+
+### ✨ Features
+
+- **reorderable table**: Articles can now be reordered via drag-and-drop in the list view. The `position` field is removed from the form — it is managed automatically by drag-and-drop.
+- **auto-position**: New articles are automatically assigned the last position (`max(position) + 1`) on creation.
+- **quick parent change**: A "Parent" action on each table row lets you change the parent article via a searchable select, without opening the edit page.
+
 ## [v1.2.9](https://github.com/happytodev/blogr-docs/compare/v1.2.8...v1.2.9) - 2026-07-05
 
 ### 🐛 Bug Fixes

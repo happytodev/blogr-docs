@@ -13,6 +13,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 
@@ -67,12 +68,6 @@ class DocArticleResource extends Resource
                             ->searchable()
                             ->preload()
                             ->nullable()
-                            ->columnSpan(1),
-
-                        TextInput::make('position')
-                            ->numeric()
-                            ->default(0)
-                            ->required()
                             ->columnSpan(1),
 
                         TextInput::make('icon')
@@ -193,10 +188,14 @@ class DocArticleResource extends Resource
                         $translation = $parent->defaultTranslation();
 
                         return $translation ? $translation->title : "#{$parent->id}";
+                    })
+                    ->searchable(query: function ($query, $search) {
+                        return $query->whereHas('parent.translations', fn ($q) => $q->where('title', 'like', "%{$search}%"));
                     }),
 
                 TextColumn::make('position')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 IconColumn::make('is_published')
                     ->boolean()
@@ -216,12 +215,35 @@ class DocArticleResource extends Resource
                 //
             ])
             ->actions([
+                Action::make('change_parent')
+                    ->label('Parent')
+                    ->icon('heroicon-o-folder-arrow-down')
+                    ->form([
+                        \Filament\Forms\Components\Select::make('parent_id')
+                            ->label('New parent')
+                            ->relationship('parent', 'id')
+                            ->getOptionLabelFromRecordUsing(function (DocArticle $record) {
+                                $translation = $record->defaultTranslation();
+                                return $translation ? $translation->title : "#{$record->id}";
+                            })
+                            ->searchable()
+                            ->preload()
+                            ->nullable(),
+                    ])
+                    ->action(function (array $data, DocArticle $record) {
+                        $record->update(['parent_id' => $data['parent_id']]);
+                        \Filament\Notifications\Notification::make()
+                            ->title('Parent updated')
+                            ->success()
+                            ->send();
+                    }),
                 EditAction::make(),
             ])
             ->bulkActions([
                 DeleteBulkAction::make(),
             ])
-            ->defaultSort('position');
+            ->defaultSort('position')
+            ->reorderable('position');
     }
 
     public static function getRelations(): array
