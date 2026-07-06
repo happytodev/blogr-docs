@@ -1,5 +1,16 @@
 # Changelog
 
+## [v1.6.1](https://github.com/happytodev/blogr-docs/compare/v1.6.0...v1.6.1) - 2026-07-06
+
+### 🐛 Bug Fixes
+
+- **watermark image**: Persist `TemporaryUploadedFile` before writing config with `var_export()` to prevent serialized object corruption
+- **watermark reload**: Use `reset()` instead of `[0]` to read FileUpload array with UUID keys — image persists on page reload
+- **watermark PDF**: Embed watermark image as base64 for DomPDF compatibility; use `Storage::disk('public')->path()` for correct file resolution
+- **watermark positions**: Added 9 positions (center, top-left, top-center, top-right, center-left, center-right, bottom-left, bottom-center, bottom-right)
+- **watermark text**: Text and image now render together when both are set
+- **FileUpload**: Replaced `visibility('public')` with `disk('public')` for proper storage
+
 ## [v1.6.0](https://github.com/happytodev/blogr-docs/compare/v1.5.0...v1.6.0) - 2026-07-06
 
 ### ✨ Features
