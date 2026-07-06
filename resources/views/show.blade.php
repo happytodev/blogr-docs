@@ -48,16 +48,29 @@
                     </p>
                 @endif
             </div>
-            @if(config('blogr-docs.pdf.enabled', false) && isset($canonicalUrl))
-                <a href="{{ $canonicalUrl }}/pdf"
-                   class="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M10 2a.75.75 0 01.75.75v7.5l1.97-1.97a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0L6.47 9.34a.75.75 0 111.06-1.06l1.97 1.97V2.75A.75.75 0 0110 2z"/>
-                        <path d="M3.75 13.5a.75.75 0 01.75.75v2.25h11V14.25a.75.75 0 011.5 0v2.25a1.5 1.5 0 01-1.5 1.5H4.5a1.5 1.5 0 01-1.5-1.5V14.25a.75.75 0 01.75-.75z"/>
+            <div class="flex items-center gap-2 flex-shrink-0">
+                <button @click="readingMode = !readingMode; localStorage.setItem('docs-reading-mode', readingMode)"
+                        class="p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                        :title="readingMode ? '{{ __('blogr-docs::ui.exit_reading_mode') }}' : '{{ __('blogr-docs::ui.enter_reading_mode') }}'"
+                        x-cloak>
+                    <svg x-show="!readingMode" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                     </svg>
-                    {{ __('blogr-docs::ui.pdf_export') }}
-                </a>
-            @endif
+                    <svg x-show="readingMode" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </button>
+                @if(config('blogr-docs.pdf.enabled', false) && isset($canonicalUrl))
+                    <a href="{{ $canonicalUrl }}/pdf"
+                       class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 2a.75.75 0 01.75.75v7.5l1.97-1.97a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0L6.47 9.34a.75.75 0 111.06-1.06l1.97 1.97V2.75A.75.75 0 0110 2z"/>
+                            <path d="M3.75 13.5a.75.75 0 01.75.75v2.25h11V14.25a.75.75 0 011.5 0v2.25a1.5 1.5 0 01-1.5 1.5H4.5a1.5 1.5 0 01-1.5-1.5V14.25a.75.75 0 01.75-.75z"/>
+                        </svg>
+                        {{ __('blogr-docs::ui.pdf_export') }}
+                    </a>
+                @endif
+            </div>
         </div>
     </header>
 
@@ -74,7 +87,7 @@
 
 @section('toc')
     @if($tocHtml ?? false)
-        <aside class="w-40 flex-shrink-0 hidden lg:block">
+        <aside class="w-40 flex-shrink-0 hidden lg:block overflow-x-hidden">
             <nav class="sticky top-24 overflow-y-auto max-h-[calc(100vh-8rem)] border-l border-gray-200 dark:border-gray-700 pl-3">
                 <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
                     {{ __('blogr-docs::ui.on_this_page') }}

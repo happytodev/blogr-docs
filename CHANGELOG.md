@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.5.0](https://github.com/happytodev/blogr-docs/compare/v1.4.2...v1.5.0) - 2026-07-06
+
+### ✨ Features
+
+- **hierarchical TOC**: Headings are now nested — `<h3>` items appear indented under their parent `<h2>`. Long titles are truncated with `…` and show full text on hover via `title` attribute.
+- **reading mode**: A toggle button (book icon) collapses both the doc sidebar and the TOC, letting the article take full width. The choice is persisted in `localStorage`.
+
 ## [v1.4.2](https://github.com/happytodev/blogr-docs/compare/v1.4.1...v1.4.2) - 2026-07-06
 
 ### 🐛 Bug Fixes

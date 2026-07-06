@@ -19,4 +19,6 @@ return [
     'translation_unavailable_title' => 'Content not available in :locale',
     'translation_unavailable_message' => 'This page is not available in :requested. Showing the :showing version instead.',
     'translation_available_in' => 'Available in:',
+    'enter_reading_mode' => 'Enter reading mode',
+    'exit_reading_mode' => 'Exit reading mode',
 ];

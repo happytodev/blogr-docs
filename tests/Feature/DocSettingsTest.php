@@ -176,7 +176,7 @@ test('toc is hidden when display_toc is disabled', function () {
     $response = $this->get('/docs/no-toc');
     $response->assertStatus(200);
 
-    $response->assertDontSee('<ul class="toc-list">', false);
+    $response->assertDontSee('toc-list', false);
 });
 
 test('heading IDs are always injected regardless of display_toc', function () {

@@ -1,5 +1,9 @@
 @extends('blogr::layouts.blog')
 
+@push('styles')
+<style>[x-cloak] { display: none !important; }</style>
+@endpush
+
 @section('seo-data')
     @php
         $seoData = [
@@ -11,10 +15,12 @@
 @endsection
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+     x-data="{ readingMode: localStorage.getItem('docs-reading-mode') === 'true' }"
+     x-init="$watch('readingMode', val => localStorage.setItem('docs-reading-mode', val))">
     <div class="flex gap-8">
         @if(isset($tree) && $tree->isNotEmpty())
-            <aside class="w-56 flex-shrink-0 hidden lg:block">
+            <aside class="w-56 flex-shrink-0 hidden lg:block" x-show="!readingMode">
                 <nav class="sticky top-24 overflow-y-auto max-h-[calc(100vh-8rem)]">
                     <div class="mb-4">
                         @if(config('blogr-docs.search.enabled', true))
