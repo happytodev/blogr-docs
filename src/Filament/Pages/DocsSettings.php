@@ -94,12 +94,7 @@ class DocsSettings extends Page
         $this->pdfWatermarkEnabled = config('blogr-docs.pdf.watermark.enabled', false);
         $this->pdfWatermarkText = config('blogr-docs.pdf.watermark.text', 'Confidential');
         $img = config('blogr-docs.pdf.watermark.image');
-        if ($img) {
-            $exists = \Illuminate\Support\Facades\Storage::disk('public')->exists('docs/pdf-watermarks/' . basename($img));
-            $this->pdfWatermarkImage = $exists ? [basename($img)] : [];
-        } else {
-            $this->pdfWatermarkImage = [];
-        }
+        $this->pdfWatermarkImage = $img ? [$img] : [];
         $this->pdfWatermarkOpacity = config('blogr-docs.pdf.watermark.opacity', 0.2);
         $this->pdfWatermarkPosition = config('blogr-docs.pdf.watermark.position', 'center');
         $this->pdfWatermarkRotation = config('blogr-docs.pdf.watermark.rotation', -45);
@@ -238,20 +233,8 @@ class DocsSettings extends Page
                             ->visible(fn () => $this->pdfEnabled && $this->pdfWatermarkEnabled)
                             ->columnSpan(1),
 
-                        \Filament\Forms\Components\Placeholder::make('pdfWatermarkPreview')
-                            ->label('Current watermark')
-                            ->content(function () {
-                                $img = config('blogr-docs.pdf.watermark.image');
-                                if (! $img) return '<span class="text-gray-400">No watermark image uploaded</span>';
-                                $url = \Illuminate\Support\Facades\Storage::disk('public')->url('docs/pdf-watermarks/' . $img);
-                                return '<img src="'.$url.'" style="max-width:200px; max-height:100px;" />';
-                            })
-                            ->html()
-                            ->visible(fn () => $this->pdfEnabled && $this->pdfWatermarkEnabled)
-                            ->columnSpan(1),
-
                         FileUpload::make('pdfWatermarkImage')
-                            ->label('Upload new watermark image')
+                            ->label('Watermark image')
                             ->image()
                             ->disk('public')
                             ->directory('docs/pdf-watermarks')
@@ -345,18 +328,15 @@ class DocsSettings extends Page
 
         $config = require $path;
 
-        // Persist FileUpload before saving config
+        // FileUpload already persists files via its own mechanism.
+        // Just extract the stored path from the component state.
         $watermarkImage = null;
         if (! empty($this->pdfWatermarkImage)) {
             $file = reset($this->pdfWatermarkImage);
-            if (is_object($file) && method_exists($file, 'store')) {
-                \Illuminate\Support\Facades\Storage::disk('public')->makeDirectory('docs/pdf-watermarks');
-                $watermarkImage = $file->store('docs/pdf-watermarks', 'public');
-            } elseif (is_string($file) && ! str_contains($file, 'livewire-tmp')) {
+            if (is_string($file) && ! str_contains($file, 'livewire-tmp')) {
                 $watermarkImage = $file;
             }
         }
-        $watermarkImage = $watermarkImage ? basename($watermarkImage) : null;
 
         $config['enabled'] = $this->enabled;
         $config['prefix'] = $this->prefix;
