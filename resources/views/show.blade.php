@@ -61,28 +61,26 @@
         </div>
     </header>
 
-    <div class="flex gap-8">
-        @if($tocHtml ?? false)
-            <aside class="w-56 flex-shrink-0 hidden lg:block">
-                <nav class="sticky top-24 overflow-y-auto max-h-[calc(100vh-8rem)] border-l border-gray-200 dark:border-gray-700 pl-4">
-                    <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
-                        {{ __('blogr-docs::ui.table_of_contents') }}
-                    </h3>
-                    {!! $tocHtml !!}
-                </nav>
-            </aside>
-        @endif
-
-        <div class="flex-1 min-w-0">
-            @if($htmlContent)
-                <div class="markdown-content">
-                    {!! $htmlContent !!}
-                </div>
-            @elseif($translation->content)
-                <div class="markdown-content">
-                    {!! $translation->content !!}
-                </div>
-            @endif
+    @if($htmlContent)
+        <div class="markdown-content">
+            {!! $htmlContent !!}
         </div>
-    </div>
+    @elseif($translation->content)
+        <div class="markdown-content">
+            {!! $translation->content !!}
+        </div>
+    @endif
+@endsection
+
+@section('toc')
+    @if($tocHtml ?? false)
+        <nav class="sticky top-24 overflow-y-auto max-h-[calc(100vh-8rem)] border-l border-gray-200 dark:border-gray-700 pl-3">
+            <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+                {{ __('blogr-docs::ui.on_this_page') }}
+            </h3>
+            <div class="space-y-1 text-xs">
+                {!! $tocHtml !!}
+            </div>
+        </nav>
+    @endif
 @endsection

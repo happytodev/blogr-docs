@@ -11,7 +11,7 @@
 @endsection
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="flex gap-8">
         @if(isset($tree) && $tree->isNotEmpty())
             <aside class="w-64 flex-shrink-0 hidden lg:block">
@@ -32,9 +32,17 @@
         <main class="flex-1 min-w-0">
             @include('blogr-docs::partials.breadcrumb')
 
-            <article class="prose prose-lg dark:prose-invert max-w-none docs-content">
-                @yield('doc-content')
-            </article>
+            <div class="flex gap-8">
+                <article class="prose prose-lg dark:prose-invert max-w-none docs-content flex-1 min-w-0">
+                    @yield('doc-content')
+                </article>
+
+                @if(! empty(trim($__env->yieldContent('toc'))))
+                    <aside class="w-48 flex-shrink-0 hidden xl:block">
+                        @yield('toc')
+                    </aside>
+                @endif
+            </div>
 
             @include('blogr-docs::partials.prev-next')
         </main>

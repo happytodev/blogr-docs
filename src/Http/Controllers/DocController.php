@@ -258,11 +258,12 @@ class DocController extends Controller
             return null;
         }
 
-        $toc = '<ul class="toc">';
+        $toc = '<ul class="toc-list space-y-1">';
         foreach ($matches as $match) {
             $level = $match[1];
             $id = $match[2];
-            $text = strip_tags($match[3]);
+            $text = preg_replace('/<a\b[^>]*>.*?<\/a>/i', '', $match[3]);
+            $text = trim(strip_tags($text));
             $toc .= '<li class="toc-level-'.$level.'"><a href="#'.$id.'">'.e($text).'</a></li>';
         }
         $toc .= '</ul>';
@@ -279,16 +280,19 @@ class DocController extends Controller
             function ($matches) {
                 $level = $matches[1];
                 $attributes = $matches[2];
-                $text = strip_tags($matches[3]);
+                $inner = $matches[3];
 
                 if (preg_match('/id=["\']/i', $attributes)) {
                     return $matches[0];
                 }
 
+                $contentWithoutPermalink = preg_replace('/<a\b[^>]*>.*?<\/a>/i', '', $inner);
+                $text = trim(strip_tags($contentWithoutPermalink));
                 $id = Str::slug($text);
+
                 $heading = '<h'.$level.$attributes.' id="'.$id.'">';
                 $heading .= '<a href="#'.$id.'" class="heading-permalink" aria-hidden="true">#</a> ';
-                $heading .= $text;
+                $heading .= $inner;
                 $heading .= '</h'.$level.'>';
 
                 return $heading;
