@@ -5,9 +5,9 @@ namespace Happytodev\BlogrDocs\Filament\Resources;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Happytodev\Blogr\Filament\Components\IconPicker;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -59,8 +59,8 @@ class DocLearningPathResource extends Resource
                             ->required()
                             ->columnSpan(1),
 
-                        TextInput::make('icon')
-                            ->label('Icon (heroicon name)')
+                        IconPicker::make('icon')
+                            ->label('Icon')
                             ->nullable()
                             ->columnSpan(1),
 

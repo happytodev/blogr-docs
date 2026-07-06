@@ -6,6 +6,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Happytodev\Blogr\Filament\Components\IconPicker;
 
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Repeater;
@@ -70,9 +71,8 @@ class DocArticleResource extends Resource
                             ->nullable()
                             ->columnSpan(1),
 
-                        TextInput::make('icon')
-                            ->label('Icon (heroicon name)')
-                            ->helperText('e.g. book-open, academic-cap, code-bracket')
+                        IconPicker::make('icon')
+                            ->label('Icon')
                             ->nullable()
                             ->columnSpan(1),
 

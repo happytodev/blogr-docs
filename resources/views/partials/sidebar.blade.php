@@ -17,7 +17,7 @@
                           {{ $isActive
                               ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 font-medium'
                               : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800' }}">
-                    @if($icon && config('blogr-docs.sidebar.show_icons', true))
+                    @if($icon && config('blogr-docs.sidebar.show_icons', true) && \Happytodev\Blogr\Helpers\IconHelper::isValid($icon))
                         <x-dynamic-component :component="'heroicon-o-'.$icon" class="w-3 h-3 flex-shrink-0" />
                     @endif
                     <span class="flex-1 truncate">{{ $translation->title }}</span>
