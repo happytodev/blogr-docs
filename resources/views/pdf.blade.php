@@ -53,6 +53,21 @@
             padding-left: 12px;
             color: #666;
         }
+        .docs-callout { border-radius: 0.5rem; padding: 1rem 1.25rem; margin: 1.5rem 0; border-left: 4px solid; }
+        .docs-callout--tip { border-color: #10b981; background-color: #ecfdf5; }
+        .docs-callout--info { border-color: #3b82f6; background-color: #eff6ff; }
+        .docs-callout--danger { border-color: #ef4444; background-color: #fef2f2; }
+        .docs-callout--caution { border-color: #f59e0b; background-color: #fffbeb; }
+        .docs-callout__title { display: flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 1.125rem; margin-bottom: 0.5rem; }
+        .docs-callout__icon { flex-shrink: 0; width: 32px; height: 32px; }
+        .docs-callout--tip .docs-callout__title { color: #065f46; }
+        .docs-callout--info .docs-callout__title { color: #1e40af; }
+        .docs-callout--danger .docs-callout__title { color: #991b1b; }
+        .docs-callout--caution .docs-callout__title { color: #92400e; }
+        .docs-callout__title--icon-only { margin-bottom: 0; }
+        .docs-callout__content { font-size: 0.75rem; }
+        .docs-callout__content > :first-child { margin-top: 0; }
+        .docs-callout__content > :last-child { margin-bottom: 0; }
         .footer {
             margin-top: 30px;
             padding-top: 10px;
