@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.6.6](https://github.com/happytodev/blogr-docs/compare/v1.6.5...v1.6.6) - 2026-07-06
+
+### 🐛 Bug Fixes
+
+- **watermark file persistence**: Ensure directory `docs/pdf-watermarks` exists via `makeDirectory()` before storing. Skip Livewire temporary references (`livewire-tmp/`) when reading config. Validate file existence on disk before displaying in FileUpload on reload.
+
 ## [v1.6.5](https://github.com/happytodev/blogr-docs/compare/v1.6.4...v1.6.5) - 2026-07-06
 
 ### 🐛 Bug Fixes
