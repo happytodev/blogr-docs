@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.6.2](https://github.com/happytodev/blogr-docs/compare/v1.6.1...v1.6.2) - 2026-07-06
+
+### 🐛 Bug Fixes
+
+- **PDF localized 404**: Move localized PDF route `{locale}/docs/{path}/pdf` outside the `SetLocale` middleware group — the middleware interfered with the `where('path', '.*')` pattern causing a 404 on localized PDF URLs.
+- **TOC truncation**: Add `min-w-0` to the TOC `<ul>` so that `truncate` on child `<a>` elements works correctly when titles overflow.
+
 ## [v1.6.1](https://github.com/happytodev/blogr-docs/compare/v1.6.0...v1.6.1) - 2026-07-06
 
 ### 🐛 Bug Fixes
