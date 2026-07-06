@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.4.1](https://github.com/happytodev/blogr-docs/compare/v1.4.0...v1.4.1) - 2026-07-06
+
+### 🐛 Bug Fixes
+
+- **TOC rendering on production**: Move `<aside>` wrapper inside `@section('toc')` to fix Blade section evaluation order. The conditional `@if(yieldContent('toc'))` in the layout was evaluated before `@yield('doc-content')` was processed, so the section didn't exist yet on production. Works on local with fresh OPcache but fails on production.
+
 ## [v1.4.0](https://github.com/happytodev/blogr-docs/compare/v1.3.1...v1.4.0) - 2026-07-06
 
 ### ✨ Features
