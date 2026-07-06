@@ -37,11 +37,7 @@
                     @yield('doc-content')
                 </article>
 
-                @if(! empty(trim($__env->yieldContent('toc'))))
-                    <aside class="w-40 flex-shrink-0 hidden xl:block">
-                        @yield('toc')
-                    </aside>
-                @endif
+                @yield('toc')
             </div>
 
             @include('blogr-docs::partials.prev-next')
