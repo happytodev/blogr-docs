@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.6.8](https://github.com/happytodev/blogr-docs/compare/v1.6.7...v1.6.8) - 2026-07-06
+
+### 🐛 Bug Fixes
+
+- **watermark preview**: Remove `basename()` from save — the full path (with `docs/pdf-watermarks/` prefix) must be preserved. Normalize path in `mount()` by prepending the directory if missing. Check file existence before setting FileUpload state.
+
 ## [v1.6.7](https://github.com/happytodev/blogr-docs/compare/v1.6.6...v1.6.7) - 2026-07-06
 
 ### 🐛 Bug Fixes
