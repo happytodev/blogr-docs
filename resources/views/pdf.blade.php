@@ -98,9 +98,11 @@
                 @php
                     $watermarkPath = \Illuminate\Support\Facades\Storage::disk('public')
                         ->path(config('blogr-docs.pdf.watermark.image'));
+                    $watermarkMime = \Illuminate\Support\Facades\Storage::disk('public')
+                        ->mimeType(config('blogr-docs.pdf.watermark.image'));
                 @endphp
                 @if(file_exists($watermarkPath))
-                    <img src="{{ $watermarkPath }}" alt="Watermark">
+                    <img src="data:{{ $watermarkMime }};base64,{{ base64_encode(file_get_contents($watermarkPath)) }}" alt="Watermark" style="max-width:{{ config('blogr-docs.pdf.watermark.size', 60) }}px; max-height:{{ config('blogr-docs.pdf.watermark.size', 60) }}px;">
                 @endif
             @else
                 {{ config('blogr-docs.pdf.watermark.text', 'Confidential') }}
