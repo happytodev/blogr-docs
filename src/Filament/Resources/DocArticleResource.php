@@ -20,6 +20,7 @@ use Filament\Tables\Columns\TextColumn;
 
 use Filament\Tables\Table;
 use Happytodev\BlogrDocs\Models\DocArticle;
+use Happytodev\Blogr\Filament\Components\CalloutMarkdownEditor;
 use Happytodev\BlogrDocs\Models\DocArticleTranslation;
 
 class DocArticleResource extends Resource
@@ -122,7 +123,7 @@ class DocArticleResource extends Resource
                                     ->rows(2)
                                     ->columnSpan(1),
 
-                                \Filament\Forms\Components\MarkdownEditor::make('content')
+                                CalloutMarkdownEditor::make('content')
                                     ->fileAttachmentsDirectory('docs')
                                     ->required()
                                     ->columnSpanFull(),
