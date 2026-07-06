@@ -32,11 +32,13 @@ return array (
     'orientation' => 'portrait',
     'watermark' => 
     array (
-      'enabled' => true,
-      'text' => 'provided by HappyToDev',
-      'image' => NULL,
+      'enabled' => false,
+      'text' => 'Confidential',
+      'image' => null,
       'opacity' => 0.2,
       'position' => 'center',
+      'rotation' => -45,
+      'size' => 60,
     ),
   ),
   'seo' => 

@@ -324,6 +324,17 @@ class DocsSettings extends Page
 
         $config = require $path;
 
+        // Persist FileUpload before saving config
+        $watermarkImage = null;
+        if (! empty($this->pdfWatermarkImage)) {
+            $file = reset($this->pdfWatermarkImage);
+            if (is_object($file) && method_exists($file, 'store')) {
+                $watermarkImage = $file->store('docs/pdf-watermarks', 'public');
+            } elseif (is_string($file)) {
+                $watermarkImage = $file;
+            }
+        }
+
         $config['enabled'] = $this->enabled;
         $config['prefix'] = $this->prefix;
         $config['sidebar']['collapsible'] = $this->sidebarCollapsible;
@@ -339,12 +350,11 @@ class DocsSettings extends Page
         $config['pdf']['orientation'] = $this->pdfOrientation;
         $config['pdf']['watermark']['enabled'] = $this->pdfWatermarkEnabled;
         $config['pdf']['watermark']['text'] = $this->pdfWatermarkText;
-        $config['pdf']['watermark']['image'] = $this->pdfWatermarkImage;
+        $config['pdf']['watermark']['image'] = $watermarkImage;
         $config['pdf']['watermark']['opacity'] = (float) $this->pdfWatermarkOpacity;
         $config['pdf']['watermark']['position'] = $this->pdfWatermarkPosition;
         $config['pdf']['watermark']['rotation'] = (int) $this->pdfWatermarkRotation;
         $config['pdf']['watermark']['size'] = (int) $this->pdfWatermarkSize;
-        $config['pdf']['watermark']['image'] = reset($this->pdfWatermarkImage) ?: null;
         $config['embeds']['youtube'] = $this->embedYoutube;
         $config['embeds']['vimeo'] = $this->embedVimeo;
         $config['embeds']['dailymotion'] = $this->embedDailymotion;
