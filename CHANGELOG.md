@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.6.9](https://github.com/happytodev/blogr-docs/compare/v1.6.8...v1.6.9) - 2026-07-06
+
+### 🐛 Bug Fixes
+
+- **watermark persistence**: Restore manual `$file->store()` in `save()` — Page components don't auto-dehydrate FileUpload, so `saveUploadedFiles()` was never called. The uploaded file stayed as a Livewire temporary file and the config stored `null`.
+
 ## [v1.6.8](https://github.com/happytodev/blogr-docs/compare/v1.6.7...v1.6.8) - 2026-07-06
 
 ### 🐛 Bug Fixes

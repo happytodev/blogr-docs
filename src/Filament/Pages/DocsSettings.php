@@ -337,12 +337,14 @@ class DocsSettings extends Page
 
         $config = require $path;
 
-        // FileUpload already persists files via its own mechanism.
-        // Just extract the stored path from the component state.
+        // Persist uploaded file manually (Page doesn't auto-dehydrate FileUpload)
         $watermarkImage = null;
         if (! empty($this->pdfWatermarkImage)) {
             $file = reset($this->pdfWatermarkImage);
-            if (is_string($file) && ! str_contains($file, 'livewire-tmp')) {
+            if (is_object($file) && method_exists($file, 'store')) {
+                \Illuminate\Support\Facades\Storage::disk('public')->makeDirectory('docs/pdf-watermarks');
+                $watermarkImage = $file->store('docs/pdf-watermarks', 'public');
+            } elseif (is_string($file) && ! str_contains($file, 'livewire-tmp')) {
                 $watermarkImage = $file;
             }
         }
