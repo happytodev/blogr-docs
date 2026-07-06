@@ -259,7 +259,8 @@ class DocController extends Controller
         }
 
         $toc = '<ul class="toc-list space-y-1">';
-        $hasH3 = false;
+        $openLi = false;
+        $openChildUl = false;
 
         foreach ($matches as $match) {
             $level = (int) $match[1];
@@ -269,23 +270,28 @@ class DocController extends Controller
             $escaped = e($text);
 
             if ($level === 2) {
-                if ($hasH3) {
-                    $toc .= '</ul></li>';
-                    $hasH3 = false;
+                if ($openChildUl) {
+                    $toc .= '</ul>';
+                    $openChildUl = false;
+                }
+                if ($openLi) {
+                    $toc .= '</li>';
                 }
                 $toc .= '<li class="toc-level-2"><a href="#'.$id.'" class="truncate block" title="'.$escaped.'">'.$escaped.'</a>';
-                $hasH3 = true;
+                $openLi = true;
             } elseif ($level === 3) {
-                if (! str_contains($toc, '<ul class="toc-children">')) {
-                    $toc .= '<ul class="toc-children space-y-1 mt-1 ml-3 border-l border-gray-200 dark:border-gray-700 pl-3">';
+                if ($openLi && ! $openChildUl) {
+                    $toc .= '<ul class="toc-children space-y-1 mt-1 ml-2 border-l border-gray-200 dark:border-gray-700 pl-2">';
+                    $openChildUl = true;
                 }
                 $toc .= '<li class="toc-level-3"><a href="#'.$id.'" class="truncate block" title="'.$escaped.'">'.$escaped.'</a></li>';
             }
         }
 
-        if ($hasH3 && str_contains($toc, '<ul class="toc-children">')) {
-            $toc .= '</ul></li>';
-        } elseif ($hasH3) {
+        if ($openChildUl) {
+            $toc .= '</ul>';
+        }
+        if ($openLi) {
             $toc .= '</li>';
         }
 

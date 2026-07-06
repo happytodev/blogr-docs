@@ -87,7 +87,7 @@
 
 @section('toc')
     @if($tocHtml ?? false)
-        <aside class="w-40 flex-shrink-0 hidden lg:block overflow-x-hidden">
+        <aside class="w-40 flex-shrink-0 hidden lg:block" x-show="!readingMode">
             <nav class="sticky top-24 overflow-y-auto max-h-[calc(100vh-8rem)] border-l border-gray-200 dark:border-gray-700 pl-3">
                 <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
                     {{ __('blogr-docs::ui.on_this_page') }}
