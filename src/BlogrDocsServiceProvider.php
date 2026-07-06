@@ -51,6 +51,8 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
+        $this->registerPdfRoutes();
+
         $this->app->singleton('blogr-docs.converter', function () {
             $environment = new Environment([
                 'html_input' => 'escape',
@@ -87,6 +89,25 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
 
             $panel->plugin($this->app->make(BlogrDocsPlugin::class));
         });
+    }
+
+    protected function registerPdfRoutes(): void
+    {
+        if (! config('blogr-docs.enabled', true)) {
+            return;
+        }
+
+        $prefix = config('blogr-docs.prefix', 'docs');
+        $middleware = config('blogr-docs.middleware', ['web']);
+        $router = $this->app['router'];
+
+        $router->get($prefix.'/{path}/pdf', [
+            \Happytodev\BlogrDocs\Http\Controllers\DocController::class, 'downloadPdf',
+        ])->where('path', '.*')->middleware($middleware)->name('blogr-docs.pdf');
+
+        $router->get('/{locale}/'.$prefix.'/{path}/pdf', [
+            \Happytodev\BlogrDocs\Http\Controllers\DocController::class, 'downloadPdfLocalized',
+        ])->where('path', '.*')->middleware($middleware)->name('blogr-docs.pdf.localized');
     }
 
     public function packageBooted(): void
@@ -142,15 +163,6 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
         $prefix = config('blogr-docs.prefix', 'docs');
         $middleware = config('blogr-docs.middleware', ['web']);
         $router = $this->app['router'];
-
-        // Register PDF routes FIRST, before any CMS catch-all routes
-        $router->get($prefix.'/{path}/pdf', [
-            \Happytodev\BlogrDocs\Http\Controllers\DocController::class, 'downloadPdf',
-        ])->where('path', '.*')->middleware($middleware)->name('blogr-docs.pdf');
-
-        $router->get('/{locale}/'.$prefix.'/{path}/pdf', [
-            \Happytodev\BlogrDocs\Http\Controllers\DocController::class, 'downloadPdfLocalized',
-        ])->where('path', '.*')->middleware($middleware)->name('blogr-docs.pdf.localized');
 
         // Register localized routes
         $localesEnabled = config('blogr.locales.enabled', false);
