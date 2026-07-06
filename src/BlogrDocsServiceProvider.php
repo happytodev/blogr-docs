@@ -145,12 +145,13 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
         $localesEnabled = config('blogr.locales.enabled', false);
 
         if ($localesEnabled) {
+            $router->get('/{locale}/'.$prefix.'/{path}/pdf', [
+                \Happytodev\BlogrDocs\Http\Controllers\DocController::class, 'downloadPdfLocalized',
+            ])->where('path', '.*')->middleware($middleware)->name('blogr-docs.pdf.localized');
+
             $router->group([
                 'middleware' => array_merge($middleware, [\Happytodev\Blogr\Http\Middleware\SetLocale::class]),
             ], function ($router) use ($prefix) {
-                $router->get('/{locale}/'.$prefix.'/{path}/pdf', [
-                    \Happytodev\BlogrDocs\Http\Controllers\DocController::class, 'downloadPdfLocalized',
-                ])->where('path', '.*')->name('blogr-docs.pdf.localized');
 
                 $router->get('/{locale}/'.$prefix, [
                     \Happytodev\BlogrDocs\Http\Controllers\DocController::class, 'index',

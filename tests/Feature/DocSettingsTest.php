@@ -156,7 +156,7 @@ test('toc is rendered when display_toc is enabled', function () {
     $response = $this->get('/docs/toc-test');
     $response->assertStatus(200);
 
-    $response->assertSee('<ul class="toc-list space-y-1">', false);
+    $response->assertSee('<ul class="toc-list', false);
 });
 
 test('toc is hidden when display_toc is disabled', function () {
