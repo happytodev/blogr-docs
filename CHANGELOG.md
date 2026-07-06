@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.6.4](https://github.com/happytodev/blogr-docs/compare/v1.6.3...v1.6.4) - 2026-07-06
+
+### 🐛 Bug Fixes
+
+- **PDF 404 localisé**: Les routes PDF sont maintenant enregistrées dans `packageRegistered()` (phase register) au lieu de `packageBooted()` (phase boot). Les routes CMS catch-all de blogr core étant enregistrées dans une phase boot antérieure, elles prenaient le pas sur les routes PDF docs. L'enregistrement en phase register garantit que les routes PDF sont ajoutées au routeur avant les routes CMS, quel que soit l'ordre de chargement des providers.
+
 ## [v1.6.3](https://github.com/happytodev/blogr-docs/compare/v1.6.2...v1.6.3) - 2026-07-06
 
 ### 🐛 Bug Fixes
