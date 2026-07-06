@@ -1,5 +1,16 @@
 # Changelog
 
+## [Unreleased]
+
+### ✨ Features
+
+- **callouts**: Callout blocks now render with full CSS styling (colored borders, backgrounds, icon) in PDF exports
+- **editor**: Article content field uses `CalloutMarkdownEditor` with 4 toolbar buttons (Tip, Info, Caution, Danger)
+
+### 🧪 Tests
+
+- `DocSettingsTest` — regression test verifying PDF template includes all callout CSS selectors
+
 ## [v1.6.9](https://github.com/happytodev/blogr-docs/compare/v1.6.8...v1.6.9) - 2026-07-06
 
 ### 🐛 Bug Fixes

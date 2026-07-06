@@ -121,6 +121,38 @@ test('extension version matches Blogr::VERSION', function () {
     expect($extension->getVersion())->toBe(\Happytodev\BlogrDocs\Blogr::VERSION);
 });
 
+test('callout blocks are rendered from Markdown', function () {
+    $converter = app('blogr-docs.converter');
+    $html = $converter->convert(":::tip[How to use]\n\nContent here.\n\nMore content.\n\n:::")->getContent();
+
+    expect($html)->toContain('class="docs-callout docs-callout--tip"');
+    expect($html)->toContain('How to use');
+    expect($html)->toContain('Content here.');
+    expect($html)->toContain('</aside>');
+});
+
+test('callout without title renders correctly', function () {
+    $converter = app('blogr-docs.converter');
+    $html = $converter->convert(":::info\n\nJust info.\n\n:::")->getContent();
+
+    expect($html)->toContain('class="docs-callout docs-callout--info"');
+    expect($html)->toContain('Just info.');
+});
+
+test('multiple callout types are supported', function () {
+    $converter = app('blogr-docs.converter');
+
+    $html = $converter->convert(":::danger[Danger zone]\n\nBeware!\n\n:::")->getContent();
+    expect($html)->toContain('class="docs-callout docs-callout--danger"');
+    expect($html)->toContain('Danger zone');
+    expect($html)->toContain('Beware!');
+
+    $html = $converter->convert(":::caution[Careful]\n\nWatch out.\n\n:::")->getContent();
+    expect($html)->toContain('class="docs-callout docs-callout--caution"');
+    expect($html)->toContain('Careful');
+    expect($html)->toContain('Watch out.');
+});
+
 test('all page components are resolvable from Livewire ComponentRegistry', function () {
     $pages = [
         \Happytodev\BlogrDocs\Filament\Resources\Pages\CreateDocArticle::class,
@@ -177,6 +209,26 @@ test('toc is hidden when display_toc is disabled', function () {
     $response->assertStatus(200);
 
     $response->assertDontSee('toc-list', false);
+});
+
+test('pdf template includes callout css styling for tip/info/danger/caution blocks', function () {
+    Config::set('blogr-docs.pdf.enabled', true);
+
+    $html = view('blogr-docs::pdf', [
+        'title' => 'Test Article',
+        'content' => '<aside class="docs-callout docs-callout--tip">callout</aside>',
+        'locale' => 'en',
+        'seoTitle' => null,
+        'seoDescription' => null,
+    ])->render();
+
+    expect($html)->toContain('.docs-callout');
+    expect($html)->toContain('.docs-callout--tip');
+    expect($html)->toContain('.docs-callout--info');
+    expect($html)->toContain('.docs-callout--danger');
+    expect($html)->toContain('.docs-callout--caution');
+    expect($html)->toContain('.docs-callout__title');
+    expect($html)->toContain('.docs-callout__content');
 });
 
 test('heading IDs are always injected regardless of display_toc', function () {
