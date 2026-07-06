@@ -2,10 +2,17 @@
 
 ## [Unreleased]
 
+## [v1.7.0](https://github.com/happytodev/blogr-docs/compare/v1.6.9...v1.7.0) - 2026-07-07
+
 ### ✨ Features
 
 - **callouts**: Callout blocks now render with full CSS styling (colored borders, backgrounds, icon) in PDF exports
 - **editor**: Article content field uses `CalloutMarkdownEditor` with 4 toolbar buttons (Tip, Info, Caution, Danger)
+- **editor**: Replace icon text input with `IconPicker` component from blogr core
+
+### 🐛 Fixed
+
+- **converter**: Add `class_exists` guard for `CalloutExtension` in docs Markdown converter
 
 ### 🧪 Tests
 

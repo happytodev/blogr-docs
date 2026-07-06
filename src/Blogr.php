@@ -4,5 +4,5 @@ namespace Happytodev\BlogrDocs;
 
 class Blogr
 {
-    const VERSION = '1.6.9';
+    const VERSION = '1.7.0';
 }
