@@ -73,15 +73,25 @@
             font-size: {{ config('blogr-docs.pdf.watermark.size', 60) }}px;
             color: #999;
             transform: rotate({{ config('blogr-docs.pdf.watermark.rotation', -45) }}deg);
-            @if(config('blogr-docs.pdf.watermark.position', 'center') === 'center')
-                top: 50%; left: 50%; margin-left: -200px; margin-top: -100px; width: 400px; text-align: center;
-            @elseif(config('blogr-docs.pdf.watermark.position', 'center') === 'top-left')
+            text-align: center;
+            @php $pos = config('blogr-docs.pdf.watermark.position', 'center'); @endphp
+            @if($pos === 'center')
+                top: 50%; left: 50%; margin-left: -200px; margin-top: -100px; width: 400px;
+            @elseif($pos === 'top-left')
                 top: 40px; left: 40px;
-            @elseif(config('blogr-docs.pdf.watermark.position', 'center') === 'top-right')
+            @elseif($pos === 'top-center')
+                top: 40px; left: 50%; margin-left: -200px; width: 400px;
+            @elseif($pos === 'top-right')
                 top: 40px; right: 40px;
-            @elseif(config('blogr-docs.pdf.watermark.position', 'center') === 'bottom-left')
+            @elseif($pos === 'center-left')
+                top: 50%; margin-top: -100px; left: 40px;
+            @elseif($pos === 'center-right')
+                top: 50%; margin-top: -100px; right: 40px;
+            @elseif($pos === 'bottom-left')
                 bottom: 40px; left: 40px;
-            @elseif(config('blogr-docs.pdf.watermark.position', 'center') === 'bottom-right')
+            @elseif($pos === 'bottom-center')
+                bottom: 40px; left: 50%; margin-left: -200px; width: 400px;
+            @elseif($pos === 'bottom-right')
                 bottom: 40px; right: 40px;
             @endif
         }
@@ -94,18 +104,26 @@
 <body>
     @if(config('blogr-docs.pdf.watermark.enabled', false))
         <div class="watermark">
-            @if(config('blogr-docs.pdf.watermark.image'))
+            @php
+                $wmImage = config('blogr-docs.pdf.watermark.image');
+                $wmText = config('blogr-docs.pdf.watermark.text', '');
+                $wmSize = config('blogr-docs.pdf.watermark.size', 60);
+            @endphp
+            @if($wmImage)
                 @php
                     $watermarkPath = \Illuminate\Support\Facades\Storage::disk('public')
-                        ->path(config('blogr-docs.pdf.watermark.image'));
+                        ->path($wmImage);
                     $watermarkMime = \Illuminate\Support\Facades\Storage::disk('public')
-                        ->mimeType(config('blogr-docs.pdf.watermark.image'));
+                        ->mimeType($wmImage);
                 @endphp
                 @if(file_exists($watermarkPath))
-                    <img src="data:{{ $watermarkMime }};base64,{{ base64_encode(file_get_contents($watermarkPath)) }}" alt="Watermark" style="max-width:{{ config('blogr-docs.pdf.watermark.size', 60) }}px; max-height:{{ config('blogr-docs.pdf.watermark.size', 60) }}px;">
+                    <img src="data:{{ $watermarkMime }};base64,{{ base64_encode(file_get_contents($watermarkPath)) }}"
+                         alt="Watermark"
+                         style="max-width:{{ $wmSize }}px; max-height:{{ $wmSize }}px;">
                 @endif
-            @else
-                {{ config('blogr-docs.pdf.watermark.text', 'Confidential') }}
+            @endif
+            @if($wmText)
+                <div style="font-size:{{ $wmSize }}px;">{{ $wmText }}</div>
             @endif
         </div>
     @endif

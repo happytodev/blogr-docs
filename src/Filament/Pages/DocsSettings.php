@@ -236,8 +236,8 @@ class DocsSettings extends Page
                         FileUpload::make('pdfWatermarkImage')
                             ->label('Watermark image')
                             ->image()
+                            ->disk('public')
                             ->directory('docs/pdf-watermarks')
-                            ->visibility('public')
                             ->visible(fn () => $this->pdfEnabled && $this->pdfWatermarkEnabled)
                             ->columnSpan(1),
 
@@ -257,8 +257,12 @@ class DocsSettings extends Page
                             ->options([
                                 'center' => 'Center',
                                 'top-left' => 'Top left',
+                                'top-center' => 'Top center',
                                 'top-right' => 'Top right',
+                                'center-left' => 'Center left',
+                                'center-right' => 'Center right',
                                 'bottom-left' => 'Bottom left',
+                                'bottom-center' => 'Bottom center',
                                 'bottom-right' => 'Bottom right',
                             ])
                             ->visible(fn () => $this->pdfEnabled && $this->pdfWatermarkEnabled)
