@@ -1,5 +1,20 @@
 # Changelog
 
+## [v1.4.0](https://github.com/happytodev/blogr-docs/compare/v1.3.1...v1.4.0) - 2026-07-06
+
+### ✨ Features
+
+- **table of contents**: The `Display table of contents` toggle now generates an actual `<ul class="toc-list">` sidebar on the right. Heading IDs are always injected for anchor links regardless of the toggle state.
+- **layout**: Sidebar doc font reduced to `text-xs`, TOC uses `text-xs`, sidebar/TOC widths adjusted for better 3-column fit.
+
+### 🐛 Bug Fixes
+
+- **heading permalink**: `extractToc()` and `injectHeadingIds()` now strip the `#` permalink from heading text when generating the TOC and the slug.
+
+### 🧪 Tests
+
+- 3 new tests: TOC shown when enabled, TOC hidden when disabled, heading IDs always present (regression test for issue #4).
+
 ## [v1.3.1](https://github.com/happytodev/blogr-docs/compare/v1.3.0...v1.3.1) - 2026-07-06
 
 ### 🐛 Bug Fixes
