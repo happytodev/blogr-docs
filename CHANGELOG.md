@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.6.3](https://github.com/happytodev/blogr-docs/compare/v1.6.2...v1.6.3) - 2026-07-06
+
+### 🐛 Bug Fixes
+
+- **PDF 404 localisé**: Les routes PDF docs sont maintenant enregistrées en premier dans `registerRoutes()`, avant les routes catch-all CMS `{locale}/{cmsSlug}` qui interceptaient les URLs PDF.
+
 ## [v1.6.2](https://github.com/happytodev/blogr-docs/compare/v1.6.1...v1.6.2) - 2026-07-06
 
 ### 🐛 Bug Fixes
