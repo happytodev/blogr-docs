@@ -2,6 +2,19 @@
 
 ## [Unreleased]
 
+### ✨ Features
+
+- **inline-toc**: contextual "In this section" TOC at the bottom of parent doc pages —
+  lists all descendants (children, grandchildren, etc.) with their H2/H3 headings extracted
+  from Markdown content on save. Works identically on mobile and desktop,
+  unlimited depth, no sidebar dependency.
+
+### 🧪 Tests
+
+- `FeatureHeadingsExtractedOnSaveTest` — 4 TDD tests (extraction, empty, null, re-extract)
+- `FeatureInlineTocRendersOnParentPageTest` — 5 TDD tests (render, headings, links,
+  leaf exclusion, grandchild depth)
+
 ## [v1.9.1](https://github.com/happytodev/blogr-docs/compare/v1.9.0...v1.9.1) - 2026-07-07
 
 ### 🐛 Fixed
