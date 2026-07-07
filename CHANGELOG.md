@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [v2.0.2](https://github.com/happytodev/blogr-docs/compare/v2.0.1...v2.0.2) - 2026-07-07
 
 ### 🐛 Fixed
 
