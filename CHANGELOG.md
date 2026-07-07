@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### ✨ Features
+
+- **markdown**: Register `ImageLightboxRenderer` in the docs converter — images in documentation articles now open in a full-screen lightbox
+
 ## [v1.8.1](https://github.com/happytodev/blogr-docs/compare/v1.8.0...v1.8.1) - 2026-07-07
 
 ### 🐛 Fixed
