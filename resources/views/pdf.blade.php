@@ -58,7 +58,7 @@
         .docs-callout--info { border-color: #3b82f6; background-color: #eff6ff; }
         .docs-callout--danger { border-color: #ef4444; background-color: #fef2f2; }
         .docs-callout--caution { border-color: #f59e0b; background-color: #fffbeb; }
-        .docs-callout__title { display: flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 1.125rem; margin-bottom: 0.5rem; }
+        .docs-callout__title { display: flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 1.125rem; margin: 0 0 0.5rem; }
         .docs-callout__icon { flex-shrink: 0; width: 32px; height: 32px; }
         .docs-callout--tip .docs-callout__title { color: #065f46; }
         .docs-callout--info .docs-callout__title { color: #1e40af; }
