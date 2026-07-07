@@ -1,12 +1,22 @@
 # Changelog
 
+## [Unreleased]
+
+## [v1.9.1](https://github.com/happytodev/blogr-docs/compare/v1.9.0...v1.9.1) - 2026-07-07
+
+### 🐛 Fixed
+
+- **mobile**: hide reading mode button on mobile (useless without sidebars), make PDF download link icon-only on mobile with responsive classes
+
+### 🧪 Tests
+
+- `regression_14_reading_mode_pdf_button_mobile` — 6 TDD tests (hidden classes, responsive PDF, aria-label)
+
 ## [v1.9.0](https://github.com/happytodev/blogr-docs/compare/v1.8.1...v1.9.0) - 2026-07-07
 
 ### ✨ Features
 
 - **markdown**: Register `ImageLightboxRenderer` in the docs converter — images in documentation articles now open in a full-screen lightbox
-
-## [Unreleased]
 
 ## [v1.8.1](https://github.com/happytodev/blogr-docs/compare/v1.8.0...v1.8.1) - 2026-07-07
 
