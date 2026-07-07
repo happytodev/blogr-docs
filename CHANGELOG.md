@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [v1.8.1](https://github.com/happytodev/blogr-docs/compare/v1.8.0...v1.8.1) - 2026-07-07
+
+### 🐛 Fixed
+
+- **routes**: Register docs routes before CMS catch-all — fixes 404 on `/docs` index when locales are enabled and CMS pages are active
+
 ## [v1.8.0](https://github.com/happytodev/blogr-docs/compare/v1.7.1...v1.8.0) - 2026-07-07
 
 ### ✨ Features

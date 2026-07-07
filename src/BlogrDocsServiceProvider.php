@@ -53,6 +53,7 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
     public function packageRegistered(): void
     {
         $this->registerPdfRoutes();
+        $this->registerRoutes();
 
         $this->app->singleton('blogr-docs.converter', function () {
             $environment = new Environment([
@@ -119,7 +120,6 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
     {
         $this->ensureNodeInPath();
         $this->registerLivewireComponents();
-        $this->registerRoutes();
         $this->registerExtensions();
     }
 
