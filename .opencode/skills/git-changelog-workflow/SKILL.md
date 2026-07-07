@@ -67,6 +67,8 @@ git commit -m "{type}({scope}): {description}
 
 ### 5. Propose and create the PR
 
+The PR body MUST include `Closes #<issue_number>` to auto-close the related issue on merge.
+
 ```bash
 git push -u origin HEAD
 gh pr create \
@@ -79,7 +81,9 @@ gh pr create \
 ## Changes
 
 - {change 1}
-- {change 2}"
+- {change 2}
+
+Closes #<issue_number>"
 ```
 
 ### 6. Present the PR URL to the user
