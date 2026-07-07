@@ -3,13 +3,16 @@
 namespace Happytodev\BlogrDocs;
 
 use Filament\Contracts\Plugin as FilamentPlugin;
+use Filament\Forms\Components\Select;
 use Filament\Panel;
+use Filament\Schemas\Components\Utilities\Get;
 use Happytodev\Blogr\Contracts\BlogrExtension;
 use Happytodev\Blogr\Services\ExtensionRegistry;
 use Happytodev\Blogr\Services\LinkTypeRegistry;
 use Happytodev\BlogrDocs\Filament\Pages\DocsSettings;
 use Happytodev\BlogrDocs\Filament\Resources\DocArticleResource;
 use Happytodev\BlogrDocs\Filament\Resources\DocLearningPathResource;
+use Happytodev\BlogrDocs\Models\DocArticle;
 use Illuminate\Support\Facades\DB;
 
 class BlogrDocsPlugin implements BlogrExtension, FilamentPlugin
@@ -113,7 +116,60 @@ class BlogrDocsPlugin implements BlogrExtension, FilamentPlugin
 
     public function registerLinkTypes(LinkTypeRegistry $registry): void
     {
-        //
+        $registry->register('docs', 'Docs', function (array $context = []) {
+            $articleId = $context['doc_article_id'] ?? null;
+
+            if ($articleId) {
+                $article = DocArticle::with('translations')->find($articleId);
+
+                if (! $article) {
+                    return null;
+                }
+
+                $locale = app()->getLocale();
+                $translation = $article->translation($locale) ?? $article->defaultTranslation();
+
+                if (! $translation) {
+                    return null;
+                }
+
+                return $translation->url();
+            }
+
+            $localesEnabled = config('blogr.locales.enabled', false);
+
+            try {
+                if ($localesEnabled) {
+                    return route('blogr-docs.index.localized', ['locale' => app()->getLocale()]);
+                }
+
+                return route('blogr-docs.index');
+            } catch (\Throwable) {
+                $prefix = config('blogr-docs.prefix', 'docs');
+
+                if ($localesEnabled) {
+                    return '/'.app()->getLocale().'/'.$prefix;
+                }
+
+                return '/'.$prefix;
+            }
+        }, function () {
+            return Select::make('doc_article_id')
+                ->label('Select Doc Article')
+                ->options(function () {
+                    return DocArticle::with('translations')
+                        ->get()
+                        ->mapWithKeys(function (DocArticle $article) {
+                            $translation = $article->translations->first();
+
+                            return [$article->id => $translation->title ?? 'Article #'.$article->id];
+                        });
+                })
+                ->searchable()
+                ->placeholder('Docs homepage (no specific article)')
+                ->visible(fn (Get $get) => $get('type') === 'docs')
+                ->columnSpan(1);
+        });
     }
 
     public static function make(): static

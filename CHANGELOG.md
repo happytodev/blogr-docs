@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### ✨ Features
+
+- **nav**: Register `docs` link type with resolver and field factory — menu items can link to the docs homepage or a specific DocArticle
+
+### 🧪 Tests
+
+- `DocsNavigationLinkTypeTest` — 5 TDD tests (registration, index URL, article URL, invalid article, field factory)
+
 ## [v1.7.1](https://github.com/happytodev/blogr-docs/compare/v1.7.0...v1.7.1) - 2026-07-07
 
 ### 🐛 Fixed
