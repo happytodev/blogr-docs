@@ -50,7 +50,7 @@
             </div>
             <div class="flex items-center gap-2 flex-shrink-0">
                 <button @click="readingMode = !readingMode; localStorage.setItem('docs-reading-mode', readingMode)"
-                        class="p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                        class="p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors hidden lg:inline-flex"
                         :title="readingMode ? '{{ __('blogr-docs::ui.exit_reading_mode') }}' : '{{ __('blogr-docs::ui.enter_reading_mode') }}'"
                         x-cloak>
                     <svg x-show="!readingMode" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,12 +62,13 @@
                 </button>
                 @if(config('blogr-docs.pdf.enabled', false) && isset($pdfUrl))
                     <a href="{{ $pdfUrl }}"
-                       class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                       class="inline-flex items-center justify-center p-2 lg:px-4 lg:py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                       aria-label="{{ __('blogr-docs::ui.pdf_export') }}">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                             <path d="M10 2a.75.75 0 01.75.75v7.5l1.97-1.97a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0L6.47 9.34a.75.75 0 111.06-1.06l1.97 1.97V2.75A.75.75 0 0110 2z"/>
                             <path d="M3.75 13.5a.75.75 0 01.75.75v2.25h11V14.25a.75.75 0 011.5 0v2.25a1.5 1.5 0 01-1.5 1.5H4.5a1.5 1.5 0 01-1.5-1.5V14.25a.75.75 0 01.75-.75z"/>
                         </svg>
-                        {{ __('blogr-docs::ui.pdf_export') }}
+                        <span class="hidden lg:inline">{{ __('blogr-docs::ui.pdf_export') }}</span>
                     </a>
                 @endif
             </div>
