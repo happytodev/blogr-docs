@@ -1,7 +1,7 @@
 {
     "name": "happytodev/blogr-docs",
-    "version": "2.0.1",
-    "description": "Documentation system plugin for Blogr — hierarchical docs, learning paths, media embeds, PDF export",
+    "version": "2.0.2",
+    "description": "Documentation system plugin for Blogr \u2014 hierarchical docs, learning paths, media embeds, PDF export",
     "type": "filament-plugin",
     "license": "MIT",
     "authors": [
