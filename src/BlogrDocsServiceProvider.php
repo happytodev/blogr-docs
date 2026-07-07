@@ -5,6 +5,8 @@ namespace Happytodev\BlogrDocs;
 use Filament\PanelRegistry;
 use Happytodev\Blogr\Services\ExtensionRegistry;
 use Happytodev\BlogrDocs\Extensions\MediaEmbedAdapter;
+use Happytodev\BlogrDocs\Models\DocArticleTranslation;
+use Happytodev\BlogrDocs\Observers\DocArticleTranslationObserver;
 use Happytodev\BlogrDocs\Filament\Pages\DocsSettings;
 use Happytodev\BlogrDocs\Filament\Resources\DocArticleResource;
 use Happytodev\BlogrDocs\Filament\Resources\DocLearningPathResource;
@@ -47,6 +49,7 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
                 '2026_07_04_000005_create_doc_learning_path_article_table',
                 '2026_07_04_000006_create_doc_article_drafts_table',
                 '2026_07_04_000007_create_doc_article_versions_table',
+                '2026_07_04_000008_add_headings_to_doc_article_translations',
             ])
             ->hasTranslations()
             ->hasViews(static::$viewNamespace);
@@ -125,6 +128,7 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
         $this->ensureNodeInPath();
         $this->registerLivewireComponents();
         $this->registerExtensions();
+        $this->registerObservers();
     }
 
     protected function ensureNodeInPath(): void
@@ -200,6 +204,11 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
                 \Happytodev\BlogrDocs\Http\Controllers\DocController::class, 'show',
             ])->where('path', '.*')->name('blogr-docs.show');
         });
+    }
+
+    protected function registerObservers(): void
+    {
+        DocArticleTranslation::observe(DocArticleTranslationObserver::class);
     }
 
     protected function registerExtensions(): void
