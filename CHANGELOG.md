@@ -1,5 +1,15 @@
 # Changelog
 
+## [v2.0.1](https://github.com/happytodev/blogr-docs/compare/v2.0.0...v2.0.1) - 2026-07-07
+
+### 🐛 Fixed
+
+- **inline-toc**: remove visible H2/H3 heading level badges from "In this section" list and nest H3 headings under their parent H2 with proper indentation
+
+### 🧪 Tests
+
+- `Regression17InlineTocHeadingBadgesAndNestingTest` — 2 TDD regression tests (badges hidden, H3 nested under H2)
+
 ## [v1.10.0](https://github.com/happytodev/blogr-docs/compare/v1.9.1...v1.10.0) - 2026-07-07
 
 ### ✨ Features
