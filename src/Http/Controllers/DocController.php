@@ -227,12 +227,18 @@ class DocController extends Controller
             ? route('blogr-docs.pdf.localized', ['locale' => $displayLocale, 'path' => $pathForUrl])
             : route('blogr-docs.pdf', ['path' => $pathForUrl]);
 
+        $descendantTree = null;
+        if ($article->isOverview()) {
+            $descendantTree = $this->treeHelper->getDescendantTree($article, $displayLocale);
+        }
+
         return view('blogr-docs::show', [
             'article' => $article,
             'translation' => $translation,
             'htmlContent' => $htmlContent,
             'title' => $translation->title,
             'tree' => $tree,
+            'descendantTree' => $descendantTree,
             'breadcrumbs' => $breadcrumbs,
             'prevArticle' => $prevArticle,
             'nextArticle' => $nextArticle,

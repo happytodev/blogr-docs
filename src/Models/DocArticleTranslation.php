@@ -20,7 +20,15 @@ class DocArticleTranslation extends Model
         'seo_title',
         'seo_description',
         'seo_keywords',
+        'headings',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'headings' => 'array',
+        ];
+    }
 
     public function article(): BelongsTo
     {

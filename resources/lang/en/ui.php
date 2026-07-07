@@ -24,4 +24,5 @@ return [
     'search_results' => 'Search results for ":query"',
     'search_results_default' => 'Search results',
     'back_to_docs' => 'Back to documentation',
+    'in_this_section' => 'In this section',
 ];

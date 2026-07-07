@@ -84,6 +84,8 @@
             {!! $translation->content !!}
         </div>
     @endif
+@include('blogr-docs::partials.inline-toc')
+
 @endsection
 
 @section('toc')

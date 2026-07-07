@@ -19,4 +19,5 @@ return [
     'translation_unavailable_title' => 'Contenu indisponible en :locale',
     'translation_unavailable_message' => 'Cette page n\'est pas disponible en :requested. Affichage de la version :showing à la place.',
     'translation_available_in' => 'Disponible en :',
+    'in_this_section' => 'Dans cette section',
 ];
