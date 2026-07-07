@@ -28,7 +28,7 @@ use League\CommonMark\Extension\Embed\EmbedExtension;
 use League\CommonMark\Extension\Table\TableExtension;
 use League\CommonMark\MarkdownConverter;
 use Livewire\Livewire;
-use Livewire\Mechanisms\ComponentRegistry;
+use Illuminate\Support\Str;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -161,9 +161,8 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
         ];
 
         foreach ($components as $componentClass) {
-            $registry = app(ComponentRegistry::class);
-            $componentName = $registry->getName($componentClass);
-            $registry->component($componentName, $componentClass);
+            $componentName = Str::kebab(class_basename($componentClass));
+            Livewire::component($componentName, $componentClass);
         }
     }
 

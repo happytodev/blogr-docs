@@ -11,11 +11,11 @@ class TestCase extends Orchestra
     {
         parent::setUp();
 
+        $this->createViteManifest();
+
         $this->app['view']->addNamespace('blogr', [
             __DIR__.'/../vendor/happytodev/blogr/resources/views',
         ]);
-
-
 
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->artisan('migrate', ['--database' => 'testbench'])->run();
@@ -51,6 +51,29 @@ class TestCase extends Orchestra
         $app['config']->set('blogr-docs.prefix', 'docs');
 
         $app['config']->set('livewire.class_namespace', 'App\\Livewire');
+    }
+
+    protected function createViteManifest(): void
+    {
+        $manifestPath = __DIR__.'/../vendor/orchestra/testbench-core/laravel/public/build/manifest.json';
+
+        if (! is_dir(dirname($manifestPath))) {
+            mkdir(dirname($manifestPath), 0755, true);
+        }
+
+        if (! file_exists($manifestPath)) {
+            file_put_contents($manifestPath, json_encode([
+                'resources/css/app.css' => [
+                    'file' => 'assets/app.css',
+                    'src' => 'resources/css/app.css',
+                ],
+                'resources/js/app.js' => [
+                    'file' => 'assets/app.js',
+                    'src' => 'resources/js/app.js',
+                    'isEntry' => true,
+                ],
+            ]));
+        }
     }
 
     protected function defineRoutes($router): void
