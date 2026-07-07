@@ -105,6 +105,39 @@ class DocTreeHelper
     }
 
     /**
+     * Build a descendant tree rooted at the given article, including headings.
+     */
+    public function getDescendantTree(DocArticle $article, string $locale): Collection
+    {
+        $allPublished = DocArticle::with(['translations' => function ($q) use ($locale) {
+            $q->where('locale', $locale);
+        }])->published()->ordered()->get();
+
+        return $this->buildDescendants($allPublished, $article->id, $locale);
+    }
+
+    /**
+     * Recursively build descendant nodes from a flat collection.
+     */
+    private function buildDescendants(Collection $articles, int $parentId, string $locale): Collection
+    {
+        return $articles
+            ->where('parent_id', $parentId)
+            ->map(function (DocArticle $article) use ($articles, $locale) {
+                $translation = $article->translation($locale) ?? $article->defaultTranslation();
+
+                return [
+                    'article' => $article,
+                    'translation' => $translation,
+                    'headings' => $translation?->headings ?? [],
+                    'children' => $this->buildDescendants($articles, $article->id, $locale),
+                    'has_children' => $articles->where('parent_id', $article->id)->isNotEmpty(),
+                ];
+            })
+            ->values();
+    }
+
+    /**
      * Flatten the tree into a single-level list (useful for search).
      */
     public function flattenTree(?string $locale = null): Collection
