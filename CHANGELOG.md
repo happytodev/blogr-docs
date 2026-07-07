@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [v1.10.0](https://github.com/happytodev/blogr-docs/compare/v1.9.1...v1.10.0) - 2026-07-07
 
 ### ✨ Features
 
