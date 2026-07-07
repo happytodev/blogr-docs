@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [v1.7.1](https://github.com/happytodev/blogr-docs/compare/v1.7.0...v1.7.1) - 2026-07-07
+
+### 🐛 Fixed
+
+- **callouts**: Remove default `<p>` margin-top on `.docs-callout__title` in PDF exports — fixes extra space between callout top border and title
+
 ## [v1.7.0](https://github.com/happytodev/blogr-docs/compare/v1.6.9...v1.7.0) - 2026-07-07
 
 ### ✨ Features
