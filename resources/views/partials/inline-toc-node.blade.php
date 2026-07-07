@@ -16,17 +16,16 @@
         @if(!empty($headings))
             @php
                 $groupedHeadings = [];
-                $currentH2 = null;
+                $currentH2Index = null;
                 foreach ($headings as $h) {
                     if ($h['level'] === 2) {
-                        $currentH2 = $h;
-                        $currentH2['children'] = [];
-                        $groupedHeadings[] = &$currentH2;
-                    } elseif ($h['level'] === 3 && $currentH2 !== null) {
-                        $currentH2['children'][] = $h;
+                        $h['children'] = [];
+                        $groupedHeadings[] = $h;
+                        $currentH2Index = count($groupedHeadings) - 1;
+                    } elseif ($h['level'] === 3 && $currentH2Index !== null) {
+                        $groupedHeadings[$currentH2Index]['children'][] = $h;
                     }
                 }
-                unset($currentH2);
             @endphp
             <ul class="mt-1 ml-4 space-y-1 border-l-2 border-gray-200 dark:border-gray-700 pl-3">
                 @foreach($groupedHeadings as $h2)

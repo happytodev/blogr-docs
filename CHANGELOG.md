@@ -1,5 +1,15 @@
 # Changelog
 
+## [Unreleased]
+
+### 🐛 Fixed
+
+- **inline-toc**: fix PHP reference bug causing duplicate heading text in "In this section" — all H2 entries displayed the last H2 heading instead of their own
+
+### 🧪 Tests
+
+- `Regression19HeadingsDisplayCorrectTextInInlineTocTest` — 2 TDD regression tests verifying each H2 heading displays its correct text in order
+
 ## [v2.0.1](https://github.com/happytodev/blogr-docs/compare/v2.0.0...v2.0.1) - 2026-07-07
 
 ### 🐛 Fixed
