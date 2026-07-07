@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [v1.8.0](https://github.com/happytodev/blogr-docs/compare/v1.7.1...v1.8.0) - 2026-07-07
+
 ### ✨ Features
 
 - **nav**: Register `docs` link type with resolver and field factory — menu items can link to the docs homepage or a specific DocArticle
