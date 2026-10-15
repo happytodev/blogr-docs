@@ -1,5 +1,22 @@
 # Changelog
 
+## v2.1.0 - 2026-10-15
+
+### 🐛 Fixed
+
+- **Settings are stored in the database instead of the config file** (#21). Saving the documentation
+  settings screen rewrote `config/blogr-docs.php` — and wrote into the package's own copy first,
+  under `vendor/`, which any `composer install` replaces. On a host that deploys by release
+  directories, an admin save therefore held until the next deployment and then reverted. The values
+  now go into the `blogr_docs_settings` table and are applied on top of the file at boot; the
+  committed `config/blogr-docs.php` keeps its role of defaults. `null` values are never stored, the
+  overrides are skipped while the config is being cached, and the PDF watermark keeps working as
+  before.
+
+### ⬆️ Upgrading
+
+- Run `php artisan migrate` to create the settings table.
+
 ## [v2.0.2](https://github.com/happytodev/blogr-docs/compare/v2.0.1...v2.0.2) - 2026-07-07
 
 ### 🐛 Fixed
