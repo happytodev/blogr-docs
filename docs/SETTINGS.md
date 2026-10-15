@@ -1,7 +1,14 @@
 # Blogr Docs Settings
 
 The docs settings page is available at `/admin/docs-settings` (or your custom admin path).
-Settings are persisted to `config/blogr-docs.php`.
+Settings are persisted to the `blogr_docs_settings` table (one row per dotted config key:
+`pdf.watermark.text`, `toc.max_level`, …) and applied on top of the configuration file when
+the application boots. An admin save therefore survives deployments, rollbacks,
+`composer install` and `config:clear`, while the committed `config/blogr-docs.php` keeps
+playing the role of the defaults.
+
+While the `blogr_docs_settings` table has not been migrated yet, the page falls back to the
+historical behaviour (writing the config file).
 
 ---
 
@@ -114,10 +121,27 @@ Default metadata used when articles don't provide their own.
 
 ---
 
-## Config file location
+## Where the settings live
 
-The settings are saved to `config/blogr-docs.php`. The package ships with a default file
-that is merged during service provider registration. Custom values are written by the
-settings page via `var_export()`.
+| | |
+|---|---|
+| Storage | `blogr_docs_settings` (`key` unique, `value` JSON) |
+| Applied | at boot, on top of the configuration file (`SettingsRepository::applyToConfig()`) |
+| Never applied | while `php artisan config:cache` / `optimize` builds the compiled configuration — the overrides must not be baked into `bootstrap/cache/config.php` |
+| Fallback | the config file, only while the table has not been migrated |
+| Untouched keys (e.g. `middleware`, `seo.*`, `reserved_slugs`) | from `config/blogr-docs.php` |
 
-To reset to defaults, delete the file and run `php artisan vendor:publish --tag=blogr-docs-config --force`.
+The package ships a default `config/blogr-docs.php`, merged during service provider
+registration; `php artisan vendor:publish --tag=blogr-docs-config` publishes your own copy.
+A `null` value is never stored: it means "unset", so the file's value stays in force.
+
+To reset to defaults, empty the table:
+
+```bash
+php artisan tinker --execute="DB::table('blogr_docs_settings')->delete();"
+php artisan config:clear
+```
+
+The table comes from the package migrations (`php artisan vendor:publish --tag=blogr-docs-migrations`
+then `php artisan migrate`). The uploaded watermark image is a file on the public disk
+(`storage/app/public/docs/pdf-watermarks/`), not a setting: it survives a deploy on its own.

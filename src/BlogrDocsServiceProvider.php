@@ -7,6 +7,7 @@ use Happytodev\Blogr\Services\ExtensionRegistry;
 use Happytodev\BlogrDocs\Extensions\MediaEmbedAdapter;
 use Happytodev\BlogrDocs\Models\DocArticleTranslation;
 use Happytodev\BlogrDocs\Observers\DocArticleTranslationObserver;
+use Happytodev\BlogrDocs\Services\SettingsRepository;
 use Happytodev\BlogrDocs\Filament\Pages\DocsSettings;
 use Happytodev\BlogrDocs\Filament\Resources\DocArticleResource;
 use Happytodev\BlogrDocs\Filament\Resources\DocLearningPathResource;
@@ -50,6 +51,7 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
                 '2026_07_04_000006_create_doc_article_drafts_table',
                 '2026_07_04_000007_create_doc_article_versions_table',
                 '2026_07_04_000008_add_headings_to_doc_article_translations',
+                '2026_10_14_000001_create_blogr_docs_settings_table',
             ])
             ->hasTranslations()
             ->hasViews(static::$viewNamespace);
@@ -93,6 +95,9 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
 
         $this->app->singleton(BlogrDocsPlugin::class, fn () => new BlogrDocsPlugin);
 
+        // Settings saved from the admin (applied at boot, further down).
+        $this->app->singleton(SettingsRepository::class);
+
         $this->app->afterResolving(PanelRegistry::class, function (PanelRegistry $registry): void {
             $panel = $registry->get('admin');
 
@@ -125,6 +130,10 @@ class BlogrDocsServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
+        // The settings saved from the admin (table blogr_docs_settings) must come
+        // before anything that reads the configuration: routes, converters, views.
+        $this->app->make(SettingsRepository::class)->applyToConfig();
+
         $this->ensureNodeInPath();
         $this->registerLivewireComponents();
         $this->registerExtensions();

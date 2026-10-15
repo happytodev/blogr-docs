@@ -14,6 +14,8 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Happytodev\BlogrDocs\Services\SettingsRepository;
+use Illuminate\Support\Arr;
 
 class DocsSettings extends Page
 {
@@ -325,6 +327,144 @@ class DocsSettings extends Page
     {
         $this->validate();
 
+        // Persist the uploaded file manually (Page doesn't auto-dehydrate FileUpload)
+        $watermarkImage = $this->storeWatermarkImage();
+
+        $stored = $this->persistSettings($this->settingsValues($watermarkImage));
+
+        Notification::make()
+            ->title('Settings saved')
+            ->success()
+            ->body($stored === null ? null : $stored.' setting'.($stored === 1 ? '' : 's').' stored in the database.')
+            ->send();
+    }
+
+    /**
+     * Persist what the page holds.
+     *
+     * Preferred path: one row per setting in `blogr_docs_settings`, applied on top
+     * of the configuration file at boot — an admin save then survives deployments,
+     * rollbacks, `composer install` and `config:clear`, and the committed file
+     * keeps its role of defaults. The file itself was not even the first target:
+     * it used to be written inside the package, under `vendor/`.
+     *
+     * Fallback, while the table has not been migrated: the historical behaviour.
+     *
+     * @param  array<string, mixed>  $values  dotted configuration keys
+     * @return int|null the number of stored settings, null when the file was used
+     */
+    protected function persistSettings(array $values): ?int
+    {
+        $settings = app(SettingsRepository::class);
+
+        if (! $settings->hasTable()) {
+            $this->updateConfigFile($values);
+
+            return null;
+        }
+
+        // A null means « not filled in »: storing it would make the file's value
+        // unreachable for that key, and a page saved without being mounted would
+        // blank the settings.
+        $stored = array_filter($values, fn ($value) => $value !== null);
+
+        $settings->put($stored);
+
+        // The page renders from the live configuration: apply the values right away.
+        foreach ($stored as $key => $value) {
+            config()->set("blogr-docs.{$key}", $value);
+        }
+
+        return $settings->count();
+    }
+
+    /**
+     * Every setting the page holds, as dotted configuration keys.
+     *
+     * The watermark image is a file on the public disk, not a value: it is passed
+     * in so the fallback keeps writing its path (or `null`) into the file.
+     *
+     * @return array<string, mixed>
+     */
+    protected function settingsValues(?string $watermarkImage = null): array
+    {
+        return [
+            'enabled' => $this->enabled,
+            'prefix' => $this->prefix,
+            'sidebar.collapsible' => $this->sidebarCollapsible,
+            'sidebar.show_icons' => $this->sidebarShowIcons,
+            'toc.enabled' => $this->tocEnabled,
+            'toc.max_level' => $this->tocMaxLevel,
+            'search.enabled' => $this->searchEnabled,
+            'search.min_length' => $this->searchMinLength,
+            'search.max_results' => $this->searchMaxResults,
+            'pdf.enabled' => $this->pdfEnabled,
+            'pdf.driver' => $this->pdfDriver,
+            'pdf.page_size' => $this->pdfPageSize,
+            'pdf.orientation' => $this->pdfOrientation,
+            'pdf.watermark.enabled' => $this->pdfWatermarkEnabled,
+            'pdf.watermark.text' => $this->pdfWatermarkText,
+            'pdf.watermark.image' => $watermarkImage ?: null,
+            'pdf.watermark.opacity' => (float) $this->pdfWatermarkOpacity,
+            'pdf.watermark.position' => $this->pdfWatermarkPosition,
+            'pdf.watermark.rotation' => (int) $this->pdfWatermarkRotation,
+            'pdf.watermark.size' => (int) $this->pdfWatermarkSize,
+            'embeds.youtube' => $this->embedYoutube,
+            'embeds.vimeo' => $this->embedVimeo,
+            'embeds.dailymotion' => $this->embedDailymotion,
+            'embeds.spotify' => $this->embedSpotify,
+            'embeds.soundcloud' => $this->embedSoundcloud,
+            'embeds.deezer' => $this->embedDeezer,
+            'embeds.apple_podcasts' => $this->embedApplePodcasts,
+        ];
+    }
+
+    /**
+     * Store the uploaded watermark image on the public disk.
+     *
+     * The image is a file, not a setting: it already survives a deploy on its
+     * own, and this part keeps working as it always did.
+     */
+    protected function storeWatermarkImage(): ?string
+    {
+        if (empty($this->pdfWatermarkImage)) {
+            return null;
+        }
+
+        $file = reset($this->pdfWatermarkImage);
+
+        if (is_object($file) && method_exists($file, 'store')) {
+            \Illuminate\Support\Facades\Storage::disk('public')->makeDirectory('docs/pdf-watermarks');
+
+            return $file->store('docs/pdf-watermarks', 'public');
+        }
+
+        if (is_string($file) && ! str_contains($file, 'livewire-tmp')) {
+            return $file;
+        }
+
+        return null;
+    }
+
+    /**
+     * Historical fallback, used only while `blogr_docs_settings` has not been
+     * migrated: write the values into the config file.
+     *
+     * In the test environment the values are applied in memory instead — writing
+     * them would rewrite the package's own committed config file.
+     *
+     * @param  array<string, mixed>  $values  dotted configuration keys
+     */
+    protected function updateConfigFile(array $values): void
+    {
+        if (app()->environment('testing')) {
+            foreach ($values as $key => $value) {
+                config()->set("blogr-docs.{$key}", $value);
+            }
+
+            return;
+        }
+
         $path = __DIR__.'/../../../config/blogr-docs.php';
         if (! file_exists($path)) {
             $path = config_path('blogr-docs.php');
@@ -332,50 +472,15 @@ class DocsSettings extends Page
 
         if (! file_exists($path)) {
             Notification::make()->title('Config file not found')->danger()->send();
+
             return;
         }
 
         $config = require $path;
 
-        // Persist uploaded file manually (Page doesn't auto-dehydrate FileUpload)
-        $watermarkImage = null;
-        if (! empty($this->pdfWatermarkImage)) {
-            $file = reset($this->pdfWatermarkImage);
-            if (is_object($file) && method_exists($file, 'store')) {
-                \Illuminate\Support\Facades\Storage::disk('public')->makeDirectory('docs/pdf-watermarks');
-                $watermarkImage = $file->store('docs/pdf-watermarks', 'public');
-            } elseif (is_string($file) && ! str_contains($file, 'livewire-tmp')) {
-                $watermarkImage = $file;
-            }
+        foreach ($values as $key => $value) {
+            Arr::set($config, $key, $value);
         }
-
-        $config['enabled'] = $this->enabled;
-        $config['prefix'] = $this->prefix;
-        $config['sidebar']['collapsible'] = $this->sidebarCollapsible;
-        $config['sidebar']['show_icons'] = $this->sidebarShowIcons;
-        $config['toc']['enabled'] = $this->tocEnabled;
-        $config['toc']['max_level'] = $this->tocMaxLevel;
-        $config['search']['enabled'] = $this->searchEnabled;
-        $config['search']['min_length'] = $this->searchMinLength;
-        $config['search']['max_results'] = $this->searchMaxResults;
-        $config['pdf']['enabled'] = $this->pdfEnabled;
-        $config['pdf']['driver'] = $this->pdfDriver;
-        $config['pdf']['page_size'] = $this->pdfPageSize;
-        $config['pdf']['orientation'] = $this->pdfOrientation;
-        $config['pdf']['watermark']['enabled'] = $this->pdfWatermarkEnabled;
-        $config['pdf']['watermark']['text'] = $this->pdfWatermarkText;
-        $config['pdf']['watermark']['image'] = $watermarkImage ?: null;
-        $config['pdf']['watermark']['opacity'] = (float) $this->pdfWatermarkOpacity;
-        $config['pdf']['watermark']['position'] = $this->pdfWatermarkPosition;
-        $config['pdf']['watermark']['rotation'] = (int) $this->pdfWatermarkRotation;
-        $config['pdf']['watermark']['size'] = (int) $this->pdfWatermarkSize;
-        $config['embeds']['youtube'] = $this->embedYoutube;
-        $config['embeds']['vimeo'] = $this->embedVimeo;
-        $config['embeds']['dailymotion'] = $this->embedDailymotion;
-        $config['embeds']['spotify'] = $this->embedSpotify;
-        $config['embeds']['soundcloud'] = $this->embedSoundcloud;
-        $config['embeds']['deezer'] = $this->embedDeezer;
-        $config['embeds']['apple_podcasts'] = $this->embedApplePodcasts;
 
         $written = '<?php'."\n\nreturn ".var_export($config, true).";\n";
         file_put_contents($path, $written);
@@ -383,11 +488,6 @@ class DocsSettings extends Page
         if (function_exists('opcache_reset')) {
             opcache_reset();
         }
-
-        Notification::make()
-            ->title('Settings saved')
-            ->success()
-            ->send();
     }
 
     public static function getNavigationLabel(): string
